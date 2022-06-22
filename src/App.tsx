@@ -8,20 +8,32 @@ function App() {
 
     return (
         <div className="App">
-            <Carousel limit={3}>
-                {[1, 2, 3, 4, 5, 6].map(el => (
-                    <div className={`prose min-w-[50%]`} key={el}>
-                        <h1>{el}</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat
-                            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                ))}
-
-            </Carousel>
+            <Carousel limit={2} cards={[
+                {
+                    title: 'prozac',
+                    desc: 'Saturday past posting sexually drawings described long, ricky attempt shapes fail invest kruger switches, cluster fame. '
+                },
+                {
+                    title: 'arguments',
+                    desc: 'Agent walnut brazil viral belong incidence facts, probability disclose eleven dust airplane switch royalty, corruption realty gps watt intent refine. '
+                },
+                {
+                    title: 'zum',
+                    desc: 'Continental jessica solaris connecting guaranteed samuel kills, commerce apparent chat pam transport obtained classics. '
+                },
+                {
+                    title: 'grid',
+                    desc: 'Radar senate supervisors extension technology rental academic, yoga neither mineral warned order. '
+                },
+                {
+                    title: 'worry',
+                    desc: 'Hill weapons finances cluster concerns refugees tablets, updating possess considered dans clips walker notion, incidence competing. '
+                },
+                {
+                    title: 'activation',
+                    desc: 'Lesbians guarantee establish shareholders senator regarding dept, matters contemporary programmer ring banking parliament tested, resorts constitution shanghai drill converter publication roll, unavailable marina weird cornwall effectively evidence. '
+                }
+            ]}/>
 
         </div>
     );
