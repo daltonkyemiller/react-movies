@@ -1,5 +1,12 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import React, { ForwardedRef, forwardRef, ReactChildren, ReactElement, useState } from 'react';
+import React, {
+    ForwardedRef,
+    forwardRef,
+    PropsWithChildren,
+    ReactElement,
+    ReactNode,
+    useState
+} from 'react';
 import useMeasure from 'react-use-measure';
 import { useInView } from 'react-intersection-observer';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
@@ -9,7 +16,9 @@ type CarouselProps = {
     cards: Array<MovieCardProps>
 }
 
-const Carousel = ({cards}: CarouselProps) => {
+const Carousel = ({cards, children}: PropsWithChildren<CarouselProps>) => {
+    const childrenArray: Array<ReactNode> = React.Children.toArray(children);
+
     const [carouselContainerRef, {width: carouselContainerWidth}] = useMeasure();
     const [cardRef, {width: cardWidth}] = useMeasure();
     const [carousel, {width: carouselWidth}] = useMeasure();
@@ -19,7 +28,7 @@ const Carousel = ({cards}: CarouselProps) => {
     const {
         ref: lastCard,
     } = useInView({onChange: handleLastCardInView});
-    const [shiftedChildren, setShiftedChildren] = useState(cards);
+    const [shiftedChildren, setShiftedChildren] = useState<Array<ReactNode>>(childrenArray);
 
     const marginOffset = useMotionValue(0);
 
@@ -28,7 +37,7 @@ const Carousel = ({cards}: CarouselProps) => {
     function handleFirstCardInView(inView: boolean) {
         if (inView) {
             const arrCopy = [...shiftedChildren];
-            arrCopy.unshift(arrCopy.pop() as MovieCardProps);
+            arrCopy.unshift(arrCopy.pop());
             setShiftedChildren(arrCopy);
             marginOffset.set(marginOffset.get() - (cardWidth + 5));
         }
@@ -37,7 +46,7 @@ const Carousel = ({cards}: CarouselProps) => {
     function handleLastCardInView(inView: boolean) {
         if (inView) {
             const arrCopy = [...shiftedChildren];
-            arrCopy.push(arrCopy.shift() as MovieCardProps);
+            arrCopy.push(arrCopy.shift());
             setShiftedChildren(arrCopy);
             marginOffset.set(marginOffset.get() + (cardWidth + 5));
         }
@@ -56,13 +65,11 @@ const Carousel = ({cards}: CarouselProps) => {
                         key={carouselWidth}
             >
                 {
-                    shiftedChildren.map((card, idx) => (
-                        <MovieCard key={card.title} title={card.title} desc={card.desc} ref={
-                            idx === 0
-                                ? mergeRefs([firstCard, cardRef])
-                                : idx === shiftedChildren.length - 1 ? lastCard : null
-                        }/>
-                    ))
+                    React.Children.map(shiftedChildren, (child, idx) => {
+                        return React.cloneElement(child as ReactElement, {
+                            ref: idx === 0 ? firstCard : idx === shiftedChildren.length - 1 ? mergeRefs([lastCard, cardRef]) : null,
+                        });
+                    })
                 }
             </motion.div>
             <AiOutlineRight className={`absolute z-10 right-0 text-5xl cursor-pointer bg-red-300`}

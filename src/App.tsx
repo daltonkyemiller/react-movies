@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Carousel from './components/Carousel/Carousel';
 
@@ -32,7 +32,29 @@ function App() {
 
     return (
         <div className="App">
-            <Carousel cards={cards}/>
+            <Carousel cards={cards}>
+                <div className={`prose h-50 min-w-[25vw] md:min-w-[50vw] p-5`}>
+                    <h1>Test</h1>
+                    <p>Testing</p>
+                </div>
+                <div className={`prose h-50 min-w-[25vw] md:min-w-[50vw] p-5`}>
+                    <h1>Test</h1>
+                    <p>Testing</p>
+                </div>
+                <div className={`prose h-50 min-w-[25vw] md:min-w-[50vw] p-5`}>
+                    <h1>Test</h1>
+                    <p>Testing</p>
+                </div>
+                <div className={`prose h-50 min-w-[25vw] md:min-w-[50vw] p-5`}>
+                    <h1>Test</h1>
+                    <p>Testing</p>
+                </div>
+                <div className={`prose h-50 min-w-[25vw] md:min-w-[50vw] p-5`}>
+                    <h1>Test</h1>
+                    <p>Testing</p>
+                </div>
+
+            </Carousel>
         </div>
     );
 }
