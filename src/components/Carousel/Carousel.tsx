@@ -4,7 +4,7 @@ import React, {
     forwardRef,
     PropsWithChildren,
     ReactElement,
-    ReactNode,
+    ReactNode, useRef,
     useState
 } from 'react';
 import useMeasure from 'react-use-measure';
@@ -12,27 +12,26 @@ import { useInView } from 'react-intersection-observer';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
 import { mergeRefs } from 'react-merge-refs';
 
-type CarouselProps = {
-    cards: Array<MovieCardProps>
-}
+type CarouselProps = {}
 
-const Carousel = ({cards, children}: PropsWithChildren<CarouselProps>) => {
+const Carousel = ({children}: PropsWithChildren<CarouselProps>) => {
     const childrenArray: Array<ReactNode> = React.Children.toArray(children);
-
-    const [carouselContainerRef, {width: carouselContainerWidth}] = useMeasure();
     const [cardRef, {width: cardWidth}] = useMeasure();
     const [carousel, {width: carouselWidth}] = useMeasure();
     const {
         ref: firstCard,
-    } = useInView({onChange: handleFirstCardInView});
+    } = useInView({onChange: handleFirstCardInView, initialInView: true});
+
     const {
         ref: lastCard,
     } = useInView({onChange: handleLastCardInView});
+
+
     const [shiftedChildren, setShiftedChildren] = useState<Array<ReactNode>>(childrenArray);
 
     const marginOffset = useMotionValue(0);
 
-    const x = useSpring(0, {damping: 10, stiffness: 50});
+    const x = useSpring(0, {damping: 10, stiffness: 10});
 
     function handleFirstCardInView(inView: boolean) {
         if (inView) {
@@ -57,17 +56,19 @@ const Carousel = ({cards, children}: PropsWithChildren<CarouselProps>) => {
             <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
                            onClick={() => x.set(x.get() + cardWidth)}/>
 
-            <motion.div ref={carouselContainerRef}
-                        className={`flex  w-fit cursor-grab`}
-                        drag={'x'}
-
-                        style={{marginLeft: marginOffset, x}}
-                        key={carouselWidth}
+            <motion.div
+                className={`flex w-fit cursor-grab`}
+                drag={'x'}
+                style={{marginLeft: marginOffset, x}}
             >
                 {
                     React.Children.map(shiftedChildren, (child, idx) => {
                         return React.cloneElement(child as ReactElement, {
-                            ref: idx === 0 ? firstCard : idx === shiftedChildren.length - 1 ? mergeRefs([lastCard, cardRef]) : null,
+                            ref: idx === 1
+                                ? mergeRefs([cardRef, firstCard]) :
+                                idx === shiftedChildren.length - 1
+                                    ? lastCard
+                                    : null,
                         });
                     })
                 }
@@ -81,17 +82,18 @@ const Carousel = ({cards, children}: PropsWithChildren<CarouselProps>) => {
 
 
 type MovieCardProps = {
-    title: string;
-    desc: string;
+    limit: [number, number];
 }
 
-const MovieCard = forwardRef(({title, desc}: MovieCardProps, ref: ForwardedRef<HTMLDivElement>) => {
-    const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500'];
+export const CarouselCell = forwardRef(({limit, children}: PropsWithChildren<MovieCardProps>,
+                                        ref: ForwardedRef<HTMLDivElement>) => {
+    const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-teal-400', 'bg-violet-400'];
     const [randomColor, setRandomColor] = useState(colors[Math.floor(Math.random() * colors.length)]);
     return (
-        <div className={`prose h-50 min-w-[25vw] md:min-w-[50vw] p-5 ${randomColor}`} ref={ref}>
-            <h1>{title}</h1>
-            <p>{desc}</p>
+        <div
+            className={`prose w-[50vw] h-50 p-5 ${randomColor}`}
+            ref={ref}>
+            {children}
         </div>
     );
 });
