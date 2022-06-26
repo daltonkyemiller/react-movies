@@ -12,9 +12,11 @@ import { useInView } from 'react-intersection-observer';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
 import { mergeRefs } from 'react-merge-refs';
 
-type CarouselProps = {}
+type CarouselProps = {
+    className?: string;
+}
 
-const Carousel = ({children}: PropsWithChildren<CarouselProps>) => {
+const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
     const childrenArray: Array<ReactNode> = React.Children.toArray(children);
     const [cardRef, {width: cardWidth}] = useMeasure();
     const [carousel, {width: carouselWidth}] = useMeasure();
@@ -28,17 +30,18 @@ const Carousel = ({children}: PropsWithChildren<CarouselProps>) => {
 
 
     const [shiftedChildren, setShiftedChildren] = useState<Array<ReactNode>>(childrenArray);
+    const [isDragging, setIsDragging] = useState(false);
 
     const marginOffset = useMotionValue(0);
 
-    const x = useSpring(0, {damping: 10, stiffness: 10});
+    const x = useSpring(0, {damping: 10, stiffness: 25});
 
     function handleFirstCardInView(inView: boolean) {
         if (inView) {
             const arrCopy = [...shiftedChildren];
             arrCopy.unshift(arrCopy.pop());
             setShiftedChildren(arrCopy);
-            marginOffset.set(marginOffset.get() - (cardWidth + 5));
+            marginOffset.set(marginOffset.get() - (cardWidth));
         }
     }
 
@@ -47,18 +50,20 @@ const Carousel = ({children}: PropsWithChildren<CarouselProps>) => {
             const arrCopy = [...shiftedChildren];
             arrCopy.push(arrCopy.shift());
             setShiftedChildren(arrCopy);
-            marginOffset.set(marginOffset.get() + (cardWidth + 5));
+            marginOffset.set(marginOffset.get() + (cardWidth));
         }
     }
 
     return (
-        <div className={`flex items-center overflow-hidden`} ref={carousel} key={carouselWidth}>
+        <div className={`flex items-center overflow-hidden ${className}`} ref={carousel} key={carouselWidth}>
             <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
                            onClick={() => x.set(x.get() + cardWidth)}/>
 
             <motion.div
                 className={`flex w-fit cursor-grab`}
                 drag={'x'}
+                onPan={() => setIsDragging(true)}
+                onPanEnd={() => setIsDragging(false)}
                 style={{marginLeft: marginOffset, x}}
             >
                 {
@@ -82,16 +87,17 @@ const Carousel = ({children}: PropsWithChildren<CarouselProps>) => {
 
 
 type MovieCardProps = {
-    limit: [number, number];
+    // limit: [number, number];
+    className?: string;
 }
 
-export const CarouselCell = forwardRef(({limit, children}: PropsWithChildren<MovieCardProps>,
+export const CarouselCell = forwardRef(({children, className}: PropsWithChildren<MovieCardProps>,
                                         ref: ForwardedRef<HTMLDivElement>) => {
     const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-teal-400', 'bg-violet-400'];
     const [randomColor, setRandomColor] = useState(colors[Math.floor(Math.random() * colors.length)]);
     return (
         <div
-            className={`prose w-[50vw] h-50 p-5 ${randomColor}`}
+            className={`prose shrink-0 h-50 p-5 ${randomColor} ${className}`}
             ref={ref}>
             {children}
         </div>
