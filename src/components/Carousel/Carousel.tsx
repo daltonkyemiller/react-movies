@@ -55,14 +55,16 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
     }
 
     return (
-        <div className={`relative flex items-center overflow-hidden ${className ? className : ''}`} ref={carousel}
-             key={carouselWidth}>
+        <div
+            className={`flex items-center ${className ? className : ''}`}
+            ref={carousel}
+            key={carouselWidth}>
 
             <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
                            onClick={() => x.set(x.get() + cardWidth)}/>
 
             <motion.div
-                className={`relative flex w-fit cursor-grab`}
+                className={`flex w-fit cursor-grab `}
                 drag={'x'}
                 onPan={() => setIsDragging(true)}
                 onPanEnd={() => setIsDragging(false)}

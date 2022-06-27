@@ -1,8 +1,6 @@
-import { animate, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { Movie } from '../../types/Movie';
-import { log } from 'util';
-import useMeasure from 'react-use-measure';
 
 
 const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
@@ -10,7 +8,7 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
     const [isShown, setIsShown] = useState(false);
 
 
-    const variants = {
+    const detailsVariants = {
         show: {
             display: 'flex',
             opacity: 1,
@@ -27,25 +25,17 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
 
     return (
         <div
-            className={`${showDetails ? 'z-[9999]' : ''} flex flex-col relative 
-            items-center justify-center isolate`}
+            className={`flex flex-col 
+            items-center relative`}
+            style={{
+                zIndex: showDetails ? 9999 : 0
+            }}
         >
             <motion.div
-                variants={variants}
-                initial={'hide'}
-                animate={showDetails ? 'show' : 'hide'}
-                transition={{type: 'spring', bounce: .1}}
-                onAnimationComplete={(a) => {
-                    if (a === 'show') setIsShown(true);
-                    if (a === 'hide') setIsShown(false);
-                }}
-                className={`fixed -z-1 flex flex-col w-[25vmax] h-[50vmax] p-3 bg-amber-300 rounded-xl`}>
-                <h1 className={`relative mt-auto font-bold text-2xl`}>{title}</h1>
-                <h1 className={`relative font-bold text-2xl`}>{title}</h1>
-            </motion.div>
+                className={`relative ${showDetails ? 'z-50' : ''} flex flex-col
+                shrink-0 aspect-[1/1.5] w-[10em] md:w-[15em] rounded-xl`}
 
-            <div
-                className={`relative z-0 flex flex-col shrink-0 aspect-[1/1.5] w-[10em] md:w-[15em] rounded-xl`}
+                // animate={{scale: showDetails ? 1.25 : 1}}
                 style={
                     {
                         backgroundImage: `url(${poster})`,
@@ -54,9 +44,21 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
                 onMouseEnter={() => setShowDetails(true)}
                 onMouseLeave={() => setShowDetails(false)}
 
-            >
+            />
+            <motion.div
+                variants={detailsVariants}
+                initial={'hide'}
+                animate={showDetails ? 'show' : 'hide'}
+                transition={{type: 'spring', bounce: .1}}
+                onAnimationComplete={(a) => {
+                    if (a === 'show') setIsShown(true);
+                    if (a === 'hide') setIsShown(false);
+                }}
+                className={`absolute z-20 flex flex-col w-[125%] h-[135%] p-3 bg-slate-500 rounded-xl`}>
+                <h1 className={`relative font-bold relative mt-auto`}>{title}</h1>
+                <p className={`relative`}>{title}</p>
+            </motion.div>
 
-            </div>
 
         </div>
     );
