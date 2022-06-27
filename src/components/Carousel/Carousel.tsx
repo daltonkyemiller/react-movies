@@ -55,12 +55,14 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
     }
 
     return (
-        <div className={`flex items-center overflow-hidden ${className}`} ref={carousel} key={carouselWidth}>
+        <div className={`relative flex items-center overflow-hidden ${className ? className : ''}`} ref={carousel}
+             key={carouselWidth}>
+
             <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
                            onClick={() => x.set(x.get() + cardWidth)}/>
 
             <motion.div
-                className={`flex w-fit cursor-grab`}
+                className={`relative flex w-fit cursor-grab`}
                 drag={'x'}
                 onPan={() => setIsDragging(true)}
                 onPanEnd={() => setIsDragging(false)}
@@ -86,18 +88,17 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
 };
 
 
-type MovieCardProps = {
+type CarouselCellProps = {
     // limit: [number, number];
     className?: string;
 }
 
-export const CarouselCell = forwardRef(({children, className}: PropsWithChildren<MovieCardProps>,
+export const CarouselCell = forwardRef(({children, className}: PropsWithChildren<CarouselCellProps>,
                                         ref: ForwardedRef<HTMLDivElement>) => {
-    const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-teal-400', 'bg-violet-400'];
-    const [randomColor, setRandomColor] = useState(colors[Math.floor(Math.random() * colors.length)]);
+
     return (
         <div
-            className={`prose shrink-0 h-50 p-5 ${randomColor} ${className}`}
+            className={`shrink-0 ${className}`}
             ref={ref}>
             {children}
         </div>
