@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
+import { useInView } from 'react-intersection-observer';
 
 
 const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
     const [showDetails, setShowDetails] = useState(false);
     const [isShown, setIsShown] = useState(false);
     const [palette, setPalette] = useState([]);
+    const {ref, inView, entry} = useInView({threshold: .25});
     // useEffect(() => {
     //     fetch(`/.netlify/functions/getDominantColor?url=${poster}`)
     //         .then(res => res.json())
@@ -14,10 +16,6 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
     //             setPalette(palette);
     //         });
     // }, [poster]);
-
-    useEffect(() => {
-        console.log(palette);
-    }, [palette]);
 
 
     const detailsVariants = {
@@ -37,6 +35,7 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
 
     return (
         <div
+            ref={ref}
             className={`flex flex-col 
             items-center relative`}
             style={{
@@ -46,7 +45,7 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
             <motion.div
                 className={`relative ${showDetails ? 'z-50' : ''} flex flex-col
                 shrink-0 aspect-[1/1.5] w-[10em] md:w-[15em] rounded-xl`}
-
+                // animate={inView ? {scale: 1} : {scale: .5}}
                 // animate={{scale: showDetails ? 1.25 : 1}}
                 style={
                     {

@@ -17,7 +17,7 @@ function App() {
     //     return (<h1>Loading...</h1>);
     // }
 
-    // Hardcoding resonse to limit API Calls
+    // Hardcoding response to limit API Calls
     const data = {
         'page': 1,
         'results': [
@@ -417,13 +417,14 @@ function App() {
         <div className={`App flex flex-col justify-center min-h-screen`}>
             <Carousel className={'relative z-10'}>
                 {
-                    data?.results?.map((card: any) => (
-                        <CarouselCell className={`p-1`} key={card.id}>
+                    data?.results?.map((card: any) => {
+                        return (<CarouselCell className={`p-1`} key={card.id}>
                             <MovieCard title={card.title}
                                        desc={card.overview}
-                                       poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}/>
-                        </CarouselCell>
-                    ))
+                                       poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
+                            />
+                        </CarouselCell>)
+                    })
                 }
             </Carousel>
             <Carousel>
