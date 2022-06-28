@@ -78,6 +78,9 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
                                 idx === shiftedChildren.length - 1
                                     ? lastCard
                                     : null,
+                            style: {
+                                order: idx
+                            }
                         });
                     })
                 }
@@ -93,14 +96,16 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
 type CarouselCellProps = {
     // limit: [number, number];
     className?: string;
+    style?: string;
 }
 
-export const CarouselCell = forwardRef(({children, className}: PropsWithChildren<CarouselCellProps>,
+export const CarouselCell = forwardRef(({children, className, style}: PropsWithChildren<CarouselCellProps>,
                                         ref: ForwardedRef<HTMLDivElement>) => {
 
     return (
         <div
             className={`shrink-0 ${className}`}
+            // style={{...style}}
             ref={ref}>
             {children}
         </div>

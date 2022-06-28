@@ -1,11 +1,23 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
 
 
 const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
     const [showDetails, setShowDetails] = useState(false);
     const [isShown, setIsShown] = useState(false);
+    const [palette, setPalette] = useState([]);
+    // useEffect(() => {
+    //     fetch(`/.netlify/functions/getDominantColor?url=${poster}`)
+    //         .then(res => res.json())
+    //         .then(({palette}) => {
+    //             setPalette(palette);
+    //         });
+    // }, [poster]);
+
+    useEffect(() => {
+        console.log(palette);
+    }, [palette]);
 
 
     const detailsVariants = {
@@ -54,7 +66,9 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
                     if (a === 'show') setIsShown(true);
                     if (a === 'hide') setIsShown(false);
                 }}
-                className={`absolute z-20 flex flex-col w-[125%] h-[135%] p-3 bg-slate-500 rounded-xl`}>
+                className={`absolute z-20 flex flex-col w-[125%] h-[135%] p-3 rounded-xl`}
+
+            >
                 <h1 className={`relative font-bold relative mt-auto`}>{title}</h1>
                 <p className={`relative`}>{title}</p>
             </motion.div>
