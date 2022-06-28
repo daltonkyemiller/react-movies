@@ -75,10 +75,10 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
                 style={{marginLeft: marginOffset, x}}
             >
                 <CarouselCell ref={firstCard} className={`bg-red-500 min-h-full`}
-                              style={{width: cardWidth + 'px', order: -1}}/>
+                              style={{width: `${cardWidth}px`, order: -1}}/>
 
                 {
-                    childrenArr.map((child, idx) => React.cloneElement(child, {
+                    childrenArr.map((child, idx) => React.cloneElement(child as ReactElement, {
                         ref: cardRef,
                         style: {
                             order: idxArr[idx]
@@ -100,7 +100,7 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
 type CarouselCellProps = {
     // limit: [number, number];
     className?: string;
-    style?: string;
+    style?: object;
 }
 
 export const CarouselCell = forwardRef(({children, className, style}: PropsWithChildren<CarouselCellProps>,
