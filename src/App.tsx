@@ -423,19 +423,8 @@ function App() {
                                        desc={card.overview}
                                        poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
                             />
-                        </CarouselCell>)
+                        </CarouselCell>);
                     })
-                }
-            </Carousel>
-            <Carousel>
-                {
-                    data?.results?.map((card: any) => (
-                        <CarouselCell className={`p-1`} key={card.id}>
-                            <MovieCard title={card.title}
-                                       desc={card.overview}
-                                       poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}/>
-                        </CarouselCell>
-                    ))
                 }
             </Carousel>
         </div>

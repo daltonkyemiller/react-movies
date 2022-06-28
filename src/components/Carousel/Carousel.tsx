@@ -1,21 +1,21 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import React, {
+    createContext,
     ForwardedRef,
     forwardRef,
     PropsWithChildren,
     ReactElement,
-    ReactNode, useEffect, useRef,
     useState
 } from 'react';
 import useMeasure from 'react-use-measure';
 import { useInView } from 'react-intersection-observer';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
-import { mergeRefs } from 'react-merge-refs';
-import { log } from 'util';
 
 type CarouselProps = {
     className?: string;
 }
+
+export const CarouselContext = createContext({isDragging: false});
 
 const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
     const childrenArr = React.Children.toArray(children);
@@ -59,40 +59,42 @@ const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
 
 
     return (
-        <div
-            className={`flex items-center ${className ? className : ''}`}
-            ref={carousel}
-            key={carouselWidth}>
+        <CarouselContext.Provider value={{isDragging}}>
+            <div
+                className={`flex items-center ${className ? className : ''}`}
+                ref={carousel}
+                key={carouselWidth}>
 
-            <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
-                           onClick={() => x.set(x.get() + cardWidth)}/>
+                <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
+                               onClick={() => x.set(x.get() + cardWidth)}/>
 
-            <motion.div
-                className={`flex w-fit cursor-grab `}
-                drag={'x'}
-                onPan={() => setIsDragging(true)}
-                onPanEnd={() => setIsDragging(false)}
-                style={{marginLeft: marginOffset, x}}
-            >
-                <CarouselCell ref={firstCard} className={`bg-red-500 min-h-full`}
-                              style={{width: `${cardWidth}px`, order: -1}}/>
+                <motion.div
+                    className={`flex w-fit cursor-grab `}
+                    drag={'x'}
+                    onPan={() => setIsDragging(true)}
+                    onPanEnd={() => setIsDragging(false)}
+                    style={{marginLeft: marginOffset, x}}
+                >
+                    <CarouselCell ref={firstCard} className={`bg-red-500 min-h-full`}
+                                  style={{width: `${cardWidth}px`, order: -1}}/>
 
-                {
-                    childrenArr.map((child, idx) => React.cloneElement(child as ReactElement, {
-                        ref: cardRef,
-                        style: {
-                            order: idxArr[idx]
-                        }
-                    }))
-                }
-                <CarouselCell ref={lastCard} className={`bg-red-500 min-h-full`}
-                              style={{width: cardWidth + 'px', order: childrenArr.length}}/>
+                    {
+                        childrenArr.map((child, idx) => React.cloneElement(child as ReactElement, {
+                            ref: cardRef,
+                            style: {
+                                order: idxArr[idx]
+                            }
+                        }))
+                    }
+                    <CarouselCell ref={lastCard} className={`bg-red-500 min-h-full`}
+                                  style={{width: cardWidth + 'px', order: childrenArr.length}}/>
 
-            </motion.div>
-            <AiOutlineRight className={`absolute z-10 right-0 text-5xl cursor-pointer bg-red-300`}
-                            onClick={() => x.set(x.get() - cardWidth)}/>
+                </motion.div>
+                <AiOutlineRight className={`absolute z-10 right-0 text-5xl cursor-pointer bg-red-300`}
+                                onClick={() => x.set(x.get() - cardWidth)}/>
 
-        </div>
+            </div>
+        </CarouselContext.Provider>
     );
 };
 

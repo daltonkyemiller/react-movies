@@ -1,22 +1,21 @@
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
 import { useInView } from 'react-intersection-observer';
+import { useQuery } from 'react-query';
+import { CarouselContext } from '../Carousel/Carousel';
 
 
 const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
     const [showDetails, setShowDetails] = useState(false);
     const [isShown, setIsShown] = useState(false);
-    const [palette, setPalette] = useState([]);
-    const {ref, inView, entry} = useInView({threshold: .25});
-    // useEffect(() => {
-    //     fetch(`/.netlify/functions/getDominantColor?url=${poster}`)
-    //         .then(res => res.json())
-    //         .then(({palette}) => {
-    //             setPalette(palette);
-    //         });
-    // }, [poster]);
+    const {isLoading, error, data} = useQuery(poster, () => {
+            return fetch(`/.netlify/functions/getDominantColor?url=${encodeURIComponent(poster)}`).then(res => res.json());
+        }
+    );
+    const {isDragging} = useContext(CarouselContext);
 
+    if (isLoading) return (<h1>Loading...</h1>);
 
     const detailsVariants = {
         show: {
@@ -35,7 +34,6 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
 
     return (
         <div
-            ref={ref}
             className={`flex flex-col 
             items-center relative`}
             style={{
@@ -59,13 +57,14 @@ const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
             <motion.div
                 variants={detailsVariants}
                 initial={'hide'}
-                animate={showDetails ? 'show' : 'hide'}
+                animate={showDetails && !isDragging ? 'show' : 'hide'}
                 transition={{type: 'spring', bounce: .1}}
                 onAnimationComplete={(a) => {
                     if (a === 'show') setIsShown(true);
                     if (a === 'hide') setIsShown(false);
                 }}
                 className={`absolute z-20 flex flex-col w-[125%] h-[135%] p-3 rounded-xl`}
+                style={{background: `linear-gradient(45deg, rgb(${data.palette[0]?.join(' ')}), rgb(${data.palette[1]?.join(' ')}))`}}
 
             >
                 <h1 className={`relative font-bold relative mt-auto`}>{title}</h1>
