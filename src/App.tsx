@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import Carousel, { CarouselCell } from './components/Carousel/Carousel';
-import MovieCard from './components/MovieCard/MovieCard';
-import { useQuery } from 'react-query';
+import Carousel from './components/Carousel/Carousel';
 
 
 function App() {
@@ -415,15 +413,16 @@ function App() {
 
     return (
         <div className={`App flex flex-col justify-center min-h-screen`}>
-            <Carousel className={'relative z-10'}>
+            {/*<Modal title={'test'}/>*/}
+            <Carousel>
                 {
                     data?.results?.map((card: any) => {
-                        return (<CarouselCell className={`p-1`} key={card.id}>
-                            <MovieCard title={card.title}
-                                       desc={card.overview}
-                                       poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
-                            />
-                        </CarouselCell>);
+                        return (
+                            <div key={card.title} className={`prose`}>
+                                <h1>{card.title}</h1>
+                                <p>{card.overview}</p>
+                            </div>
+                        );
                     })
                 }
             </Carousel>

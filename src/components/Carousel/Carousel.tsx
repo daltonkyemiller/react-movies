@@ -1,121 +1,52 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import React, {
-    createContext,
-    ForwardedRef,
-    forwardRef,
-    PropsWithChildren,
-    ReactElement,
-    useState
-} from 'react';
-import useMeasure from 'react-use-measure';
-import { useInView } from 'react-intersection-observer';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
+import useMeasure from 'react-use-measure';
 
-type CarouselProps = {
-    className?: string;
-}
+type CarouselProps = {};
 
-export const CarouselContext = createContext({isDragging: false});
-
-const Carousel = ({className, children}: PropsWithChildren<CarouselProps>) => {
+const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
     const childrenArr = React.Children.toArray(children);
-    const [cardRef, {width: cardWidth}] = useMeasure();
-    const [carousel, {width: carouselWidth}] = useMeasure();
-    const {
-        ref: firstCard,
-    } = useInView({onChange: handleFirstCardInView, initialInView: false});
 
-    const {
-        ref: lastCard,
-    } = useInView({onChange: handleLastCardInView});
-
-
-    const [isDragging, setIsDragging] = useState(false);
-    const marginOffset = useMotionValue(-20);
-
-    const x = useSpring(0, {damping: 10, stiffness: 25});
-
-    const [idxArr, setIdxArr] = useState<Array<number>>(childrenArr.map((_, idx) => idx));
-
-    function handleFirstCardInView(inView: boolean) {
-        if (inView) {
-            const arrCopy = [...idxArr];
-            arrCopy.push(arrCopy.shift() as number);
-            console.log(arrCopy);
-            setIdxArr(arrCopy);
-            marginOffset.set(marginOffset.get() - (cardWidth));
-        }
-    }
-
-    function handleLastCardInView(inView: boolean) {
-        if (inView) {
-            const arrCopy = [...idxArr];
-            arrCopy.unshift(arrCopy.pop() as number);
-            console.log(arrCopy);
-            setIdxArr(arrCopy);
-            marginOffset.set(marginOffset.get() + (cardWidth));
-        }
-    }
-
-
-    return (
-        <CarouselContext.Provider value={{isDragging}}>
-            <div
-                className={`flex items-center ${className ? className : ''}`}
-                ref={carousel}
-                key={carouselWidth}>
-
-                <AiOutlineLeft className={`absolute z-10 left-0 text-5xl cursor-pointer bg-red-300`}
-                               onClick={() => x.set(x.get() + cardWidth)}/>
-
-                <motion.div
-                    className={`flex w-fit cursor-grab `}
-                    drag={'x'}
-                    onPan={() => setIsDragging(true)}
-                    onPanEnd={() => setIsDragging(false)}
-                    style={{marginLeft: marginOffset, x}}
-                >
-                    <CarouselCell ref={firstCard} className={`bg-red-500 min-h-full`}
-                                  style={{width: `${cardWidth}px`, order: -1}}/>
-
-                    {
-                        childrenArr.map((child, idx) => React.cloneElement(child as ReactElement, {
-                            ref: cardRef,
-                            style: {
-                                order: idxArr[idx]
-                            }
-                        }))
-                    }
-                    <CarouselCell ref={lastCard} className={`bg-red-500 min-h-full`}
-                                  style={{width: cardWidth + 'px', order: childrenArr.length}}/>
-
-                </motion.div>
-                <AiOutlineRight className={`absolute z-10 right-0 text-5xl cursor-pointer bg-red-300`}
-                                onClick={() => x.set(x.get() - cardWidth)}/>
-
-            </div>
-        </CarouselContext.Provider>
+    const x = useMotionValue(0);
+    const marginOffset = useMotionValue(0);
+    const [idxOffset, setIdxOffset] = useState(
+        new Array(childrenArr.length).map((_, idx) => idx)
     );
-};
 
+    // const [cardRef, { width }] = useMeasure();
+    //
+    useEffect(() => {
+        x.onChange(() => {
+            const xVal = x.get();
+            if (xVal > 0) {
+            }
+        });
+    }, [x]);
 
-type CarouselCellProps = {
-    // limit: [number, number];
-    className?: string;
-    style?: object;
-}
-
-export const CarouselCell = forwardRef(({children, className, style}: PropsWithChildren<CarouselCellProps>,
-                                        ref: ForwardedRef<HTMLDivElement>) => {
     return (
-        <div
-            className={`shrink-0 ${className}`}
-            style={{...style}}
-            ref={ref}>
-            {children}
+        <div className={`flex align-middle`}>
+            <AiOutlineLeft
+                className={`absolute top-1/2 left-0 -translate-y-1/2 bg-orange-400 text-3xl`}
+            />
+            <motion.div
+                className={`flex`}
+                drag={'x'}
+                style={{ x }}
+                // onDrag={handleDrag}
+                // dragConstraints={{ right: 0 }}
+            >
+                {React.Children.map(children, (child, index) => {
+                    return React.cloneElement(child as React.ReactElement, {
+                        style: { flexShrink: 0, order: idxOffset[index] },
+                    });
+                })}
+            </motion.div>
+            <AiOutlineRight
+                className={`absolute top-1/2 right-0 -translate-y-1/2 bg-orange-400 text-3xl`}
+            />
         </div>
     );
-});
-
+};
 
 export default Carousel;
