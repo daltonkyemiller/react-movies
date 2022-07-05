@@ -21,7 +21,7 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
     const childrenArr = React.Children.toArray(children);
 
     const anim = useAnimation();
-    const x = useSpring(0, { stiffness: 300, damping: 10 });
+    const x = useSpring(0, { stiffness: 25, damping: 10 });
     const [cardWidth, setCardWidth] = useState(500);
     const [idxOffset, setIdxOffset] = useState(
         childrenArr.map((_, i) => [i, i * cardWidth])
@@ -51,6 +51,12 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
 
         // console.log(latestOff);
 
+        if (latestOff < -firstItem[1] && isPastBeginning)
+            setIsPastBeginning(false);
+
+        if (-latestOff + screenWidth < lastItem[1] && isPastEnd)
+            setIsPastEnd(false);
+
         if (latestOff > -firstItem[1] && !isPastBeginning) {
             console.log('past beginning');
             setIsPastBeginning(true);
@@ -68,7 +74,7 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
                 return [elIdx, elPos];
             });
             setIdxOffset(copy);
-        } else setIsPastBeginning(false);
+        }
 
         if (-latestOff + screenWidth > lastItem[1] && !isPastEnd) {
             setIsPastEnd(true);
@@ -85,8 +91,6 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
                 return [elIdx, elPos];
             });
             setIdxOffset(copy);
-        } else {
-            setIsPastEnd(false);
         }
     }
 
@@ -102,7 +106,8 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
                 onUpdate={onDragUpdate}
                 className={`relative flex`}
                 drag={'x'}
-                animate={anim}
+                // style={{ x }}
+
                 // onDrag={handleDrag}
                 // dragConstraints={{ right: 0 }}
             >
@@ -114,6 +119,7 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
                             width: cardWidth,
                             left: idxOffset[idx][1],
                             order: idxOffset[idx][0],
+                            backfaceVisibility: 'hidden',
                             // left: 100 * idx,
                         }}
                     >
@@ -135,13 +141,13 @@ const CarouselItem = (
     { children, style }: PropsWithChildren<CarouselItemProps>,
     ref: ForwardedRef<any>
 ) => {
-    const { ref: inViewRef, inView } = useInView();
+    const { ref: inViewRef, inView } = useInView({ initialInView: true });
 
     return (
         <motion.div
             // animate={inView ? { opacity: [0, 1] } : { opacity: 0 }}
             className={`absolute flex-shrink-0 bg-red-500`}
-            style={style}
+            style={{ ...style }}
             ref={inViewRef}
         >
             {children}
