@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Carousel from './components/Carousel/Carousel';
+import MovieCard from './components/MovieCard/MovieCard';
 
 function App() {
     const [count, setCount] = useState(0);
@@ -367,20 +368,20 @@ function App() {
         <div className={`App flex flex-col `}>
             {/*<Modal title={'test'}/>*/}
             <h1>Hello</h1>
-            <div className={``}>
-                <Carousel>
-                    {data?.results
-                        ?.filter((_, idx) => idx < 10)
-                        .map((card: any) => {
-                            return (
-                                <div key={card.title} className={`prose m-0`}>
-                                    <h1>{card.title}</h1>
-                                    <p>{card.overview}</p>
-                                </div>
-                            );
-                        })}
-                </Carousel>
-            </div>
+            <Carousel gap={`1rem`}>
+                {data?.results
+                    // ?.filter((_, idx) => idx < 10)
+                    .map((card: any) => {
+                        return (
+                            <MovieCard
+                                title={card.title}
+                                desc={card.desc}
+                                poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
+                                key={card.id}
+                            />
+                        );
+                    })}
+            </Carousel>
         </div>
     );
 }

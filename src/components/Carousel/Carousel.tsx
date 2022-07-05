@@ -1,126 +1,79 @@
 import { motion, useAnimation, useMotionValue, useSpring } from 'framer-motion';
 import React, {
     ForwardedRef,
-    forwardRef,
     PropsWithChildren,
+    useCallback,
     useEffect,
-    useLayoutEffect,
-    useMemo,
-    useRef,
     useState,
 } from 'react';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
 import useMeasure from 'react-use-measure';
 import { useInView } from 'react-intersection-observer';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { mergeRefs } from 'react-merge-refs';
+import _ from 'lodash';
 
-type CarouselProps = {};
+type CarouselProps = {
+    gap?: string;
+};
 
-const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
-    const childrenArr = React.Children.toArray(children);
+const Carousel = ({ children, gap }: PropsWithChildren<CarouselProps>) => {
+    const _childrenArr = React.Children.toArray(children);
 
-    const anim = useAnimation();
-    const x = useSpring(0, { stiffness: 25, damping: 10 });
-    const [cardWidth, setCardWidth] = useState(500);
-    const [idxOffset, setIdxOffset] = useState(
-        childrenArr.map((_, i) => [i, i * cardWidth])
-    );
+    const x = useSpring(0, { stiffness: 300, damping: 50 });
 
-    const [isPastBeginning, setIsPastBeginning] = useState(false);
-    const [isPastEnd, setIsPastEnd] = useState(false);
+    const [carouselRef, { left: carouselLeft, width: carouselWidth }] =
+        useMeasure();
 
-    const [carouselRef, { width: carouselWidth }] = useMeasure();
     const { width: screenWidth } = useWindowDimensions();
 
-    useLayoutEffect(() => {
-        setCardWidth(() => carouselWidth);
-    }, [carouselWidth]);
+    const moveCarousel = useCallback(
+        (offset: number) => {
+            const _x = x.get();
+            const newX: number = _.clamp(
+                _x + offset,
+                -carouselWidth + screenWidth,
+                0
+            );
+            x.set(newX);
+        },
+        [carouselWidth, screenWidth, x]
+    );
 
-    useLayoutEffect(() => {
-        setIdxOffset((latest) => latest.map((_, i) => [i, i * cardWidth]));
-    }, [cardWidth]);
+    useEffect(() => {
+        const handleArrows = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowLeft') moveCarousel(500);
+            if (e.key === 'ArrowRight') moveCarousel(-500);
+        };
+        document.addEventListener('keydown', handleArrows);
 
-    function onDragUpdate(latest: any) {
-        const padding = 500;
-        const firstItem = idxOffset.filter((el) => el[0] === 0)[0];
-        const lastItem = idxOffset.filter(
-            (el) => el[0] === idxOffset.length - 1
-        )[0];
-        const latestOff = latest.x;
-
-        // console.log(latestOff);
-
-        if (latestOff < -firstItem[1] && isPastBeginning)
-            setIsPastBeginning(false);
-
-        if (-latestOff + screenWidth < lastItem[1] && isPastEnd)
-            setIsPastEnd(false);
-
-        if (latestOff > -firstItem[1] && !isPastBeginning) {
-            console.log('past beginning');
-            setIsPastBeginning(true);
-
-            // @ts-ignore
-            const copy = idxOffset.map(([elIdx, elPos], i) => {
-                const lastIdx = idxOffset.length - 1;
-                const isLast = elIdx === lastIdx;
-                if (isLast) {
-                    elIdx = 0;
-                    elPos = firstItem[1] - cardWidth;
-                } else {
-                    elIdx = elIdx + 1;
-                }
-                return [elIdx, elPos];
-            });
-            setIdxOffset(copy);
-        }
-
-        if (-latestOff + screenWidth > lastItem[1] && !isPastEnd) {
-            setIsPastEnd(true);
-
-            const copy = idxOffset.map(([elIdx, elPos], i) => {
-                const lastIdx = idxOffset.length - 1;
-                const isFirst = elIdx === 0;
-                if (isFirst) {
-                    elIdx = lastIdx;
-                    elPos = lastItem[1] + cardWidth;
-                } else {
-                    elIdx = elIdx - 1;
-                }
-                return [elIdx, elPos];
-            });
-            setIdxOffset(copy);
-        }
-    }
+        return () => document.removeEventListener('keydown', handleArrows);
+    }, [moveCarousel]);
 
     return (
-        <div className={`relative`} ref={carouselRef}>
+        <div className={`relative`} key={screenWidth}>
             <AiOutlineLeft
                 className={`absolute top-1/2 left-0 z-50 -translate-y-1/2 bg-orange-400 text-3xl`}
                 onClick={() => {
-                    x.set(x.get() + cardWidth);
+                    moveCarousel(500);
                 }}
             />
             <motion.div
-                onUpdate={onDragUpdate}
-                className={`relative flex`}
+                ref={carouselRef}
                 drag={'x'}
-                // style={{ x }}
-
-                // onDrag={handleDrag}
-                // dragConstraints={{ right: 0 }}
+                className={`relative flex min-w-fit`}
+                style={{ x, gap }}
+                dragConstraints={{
+                    left: -carouselWidth + screenWidth,
+                    right: 0,
+                }}
             >
-                {childrenArr.map((child, idx) => (
+                {_childrenArr.map((child, i) => (
                     <CarouselItem
-                        key={idx}
+                        key={i}
                         style={{
-                            height: '500px',
-                            width: cardWidth,
-                            left: idxOffset[idx][1],
-                            order: idxOffset[idx][0],
                             backfaceVisibility: 'hidden',
-                            // left: 100 * idx,
+                            userSelect: 'none',
+                            pointerEvents: 'none',
                         }}
                     >
                         {child}
@@ -129,6 +82,7 @@ const Carousel = ({ children }: PropsWithChildren<CarouselProps>) => {
             </motion.div>
             <AiOutlineRight
                 className={`absolute top-1/2 right-0 -translate-y-1/2 bg-orange-400 text-3xl`}
+                onClick={() => moveCarousel(-500)}
             />
         </div>
     );
@@ -146,7 +100,7 @@ const CarouselItem = (
     return (
         <motion.div
             // animate={inView ? { opacity: [0, 1] } : { opacity: 0 }}
-            className={`absolute flex-shrink-0 bg-red-500`}
+            className={`inline-block`}
             style={{ ...style }}
             ref={inViewRef}
         >
