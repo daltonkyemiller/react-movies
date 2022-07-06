@@ -12,16 +12,25 @@ type Theme = {
     toggleTheme?: () => void;
 };
 
-export const ThemeContext = createContext<Theme>({ theme: 'light' });
+export const ThemeContext = createContext<Theme>({
+    theme: 'light',
+});
 
-type ThemeProviderProps = {
-    initialTheme: 'dark' | 'light';
-};
+type ThemeProviderProps = {};
 export const ThemeProvider = ({
-    initialTheme,
     children,
 }: PropsWithChildren<ThemeProviderProps>) => {
-    const [theme, setTheme] = useState('light');
+    const userSetTheme = localStorage.getItem('theme');
+    let initialTheme;
+    if (!userSetTheme) {
+        initialTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+    } else {
+        initialTheme = userSetTheme;
+    }
+
+    const [theme, setTheme] = useState(initialTheme);
 
     const toggleTheme = () => {
         setTheme(theme === 'light' ? 'dark' : 'light');
@@ -35,9 +44,8 @@ export const ThemeProvider = ({
         localStorage.setItem('theme', theme);
     };
 
-    if (initialTheme) _setTheme(initialTheme);
-
     useEffect(() => {
+        console.log(localStorage.getItem('theme'));
         _setTheme(theme);
     }, [theme]);
 
