@@ -38,7 +38,7 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
                 {/*<MovieCardSkeleton title={title} />*/}
             </AnimatePresence>
             <motion.div
-                className={`relative bg-cover`}
+                className={`relative bg-cover `}
                 variants={variants}
                 ref={ref}
                 initial={`hide`}
@@ -48,7 +48,7 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
                     // initial={{ opacity: 0 }}
                     // animate={isPosterLoaded ? { opacity: 1 } : { opacity: 0 }}
                     src={poster}
-                    className={`aspect-[1/1.5] min-w-[200px] rounded-lg`}
+                    className={`aspect-[1/1.5] w-[200px] min-w-[200px] rounded-lg`}
                     alt={`${title} poster`}
                     loading={`lazy`}
                     onLoad={() => {
@@ -57,7 +57,7 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
                         }, 1000);
                     }}
                 />
-                <h1>{title}</h1>
+                <h1 className={`text-md font-bold`}>{title}</h1>
                 <p>{desc}</p>
             </motion.div>
         </>
@@ -93,24 +93,25 @@ const MovieCardSkeleton = ({ title }: SkeletonProps) => {
                 variants={shimmerVariants}
                 initial={`initial`}
                 animate={`shimmer`}
-                className={`relative aspect-[1/1.5] min-w-[200px] rounded-xl bg-slate-400`}
+                className={`relative aspect-[1/1.5] w-[200px] rounded-xl bg-slate-400`}
                 style={{
                     backgroundSize: '1000px 100%',
                     backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
                 }}
             />
 
-            <motion.p
-                className={`h-3 w-fit rounded-full bg-slate-800 text-transparent`}
+            <motion.h1
+                className={`text-md max-h-3 w-fit max-w-[90%] rounded-full bg-slate-800 font-bold text-transparent`}
                 variants={shimmerVariants}
                 animate={`shimmer`}
                 style={{
                     backgroundSize: '1000px 100%',
+                    //language=CSS
                     backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
                 }}
             >
                 {title}
-            </motion.p>
+            </motion.h1>
         </motion.div>
     );
 };

@@ -12,8 +12,6 @@ function App() {
         ).then((res) => res.json())
     );
 
-    console.log(data);
-
     if (isLoading) {
         return <h1>Loading...</h1>;
     }

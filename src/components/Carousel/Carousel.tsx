@@ -30,8 +30,6 @@ const Carousel = ({
 
     const [containerRef, { width: containerWidth }] = useMeasure();
 
-    const { width: screenWidth } = useWindowDimensions();
-
     const moveCarousel = useCallback(
         (offset: number) => {
             const _x = x.get();
@@ -47,8 +45,8 @@ const Carousel = ({
 
     return (
         <div
-            className={`relative overflow-x-clip ${className}`}
-            key={screenWidth}
+            className={`relative cursor-pointer overflow-x-clip ${className}`}
+            key={containerWidth}
             ref={containerRef}
         >
             <AiOutlineLeft
