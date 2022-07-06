@@ -26,10 +26,9 @@ const Carousel = ({
 
     const x = useSpring(0, { stiffness: 300, damping: 50 });
 
-    const [carouselRef, { left: carouselLeft, width: carouselWidth }] =
-        useMeasure();
+    const [carouselRef, { width: carouselWidth }] = useMeasure();
 
-    const containerRef = useRef<HTMLDivElement>(null);
+    const [containerRef, { width: containerWidth }] = useMeasure();
 
     const { width: screenWidth } = useWindowDimensions();
 
@@ -38,26 +37,13 @@ const Carousel = ({
             const _x = x.get();
             const newX: number = _.clamp(
                 _x + offset,
-                -carouselWidth + screenWidth,
+                -carouselWidth + containerWidth,
                 0
             );
             x.set(newX);
         },
-        [carouselWidth, screenWidth, x]
+        [carouselWidth, containerWidth, x]
     );
-
-    useEffect(() => {
-        const handleArrows = (e: KeyboardEvent) => {
-            if (e.key === 'ArrowLeft') moveCarousel(500);
-            if (e.key === 'ArrowRight') moveCarousel(-500);
-        };
-
-        if (document.activeElement === containerRef.current) {
-            document.addEventListener('keydown', handleArrows);
-
-            return () => document.removeEventListener('keydown', handleArrows);
-        }
-    }, [moveCarousel]);
 
     return (
         <div
@@ -77,7 +63,7 @@ const Carousel = ({
                 className={`relative flex min-w-fit`}
                 style={{ x, gap }}
                 dragConstraints={{
-                    left: -carouselWidth + screenWidth,
+                    left: -carouselWidth + containerWidth,
                     right: 0,
                 }}
             >
