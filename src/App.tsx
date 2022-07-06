@@ -365,9 +365,23 @@ function App() {
     };
 
     return (
-        <div className={`App flex flex-col `}>
+        <div className={`App flex flex-col overflow-hidden p-3`}>
             {/*<Modal title={'test'}/>*/}
             <h1>Hello</h1>
+            <Carousel gap={`1rem`}>
+                {data?.results
+                    // ?.filter((_, idx) => idx < 10)
+                    .map((card: any) => {
+                        return (
+                            <MovieCard
+                                title={card.title}
+                                desc={card.desc}
+                                poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
+                                key={card.id}
+                            />
+                        );
+                    })}
+            </Carousel>
             <Carousel gap={`1rem`}>
                 {data?.results
                     // ?.filter((_, idx) => idx < 10)

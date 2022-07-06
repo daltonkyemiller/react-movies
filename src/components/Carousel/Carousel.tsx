@@ -4,7 +4,7 @@ import React, {
     PropsWithChildren,
     useCallback,
     useEffect,
-    useState,
+    useRef,
 } from 'react';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
 import useMeasure from 'react-use-measure';
@@ -14,15 +14,22 @@ import _ from 'lodash';
 
 type CarouselProps = {
     gap?: string;
+    className?: string;
 };
 
-const Carousel = ({ children, gap }: PropsWithChildren<CarouselProps>) => {
+const Carousel = ({
+    children,
+    gap,
+    className,
+}: PropsWithChildren<CarouselProps>) => {
     const _childrenArr = React.Children.toArray(children);
 
     const x = useSpring(0, { stiffness: 300, damping: 50 });
 
     const [carouselRef, { left: carouselLeft, width: carouselWidth }] =
         useMeasure();
+
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const { width: screenWidth } = useWindowDimensions();
 
@@ -44,15 +51,22 @@ const Carousel = ({ children, gap }: PropsWithChildren<CarouselProps>) => {
             if (e.key === 'ArrowLeft') moveCarousel(500);
             if (e.key === 'ArrowRight') moveCarousel(-500);
         };
-        document.addEventListener('keydown', handleArrows);
 
-        return () => document.removeEventListener('keydown', handleArrows);
+        if (document.activeElement === containerRef.current) {
+            document.addEventListener('keydown', handleArrows);
+
+            return () => document.removeEventListener('keydown', handleArrows);
+        }
     }, [moveCarousel]);
 
     return (
-        <div className={`relative`} key={screenWidth}>
+        <div
+            className={`relative overflow-x-clip ${className}`}
+            key={screenWidth}
+            ref={containerRef}
+        >
             <AiOutlineLeft
-                className={`absolute top-1/2 left-0 z-50 -translate-y-1/2 bg-orange-400 text-3xl`}
+                className={`absolute top-1/2 left-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
                     moveCarousel(500);
                 }}
@@ -81,8 +95,10 @@ const Carousel = ({ children, gap }: PropsWithChildren<CarouselProps>) => {
                 ))}
             </motion.div>
             <AiOutlineRight
-                className={`absolute top-1/2 right-0 -translate-y-1/2 bg-orange-400 text-3xl`}
-                onClick={() => moveCarousel(-500)}
+                className={`absolute top-1/2 right-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
+                onClick={() => {
+                    moveCarousel(-500);
+                }}
             />
         </div>
     );
