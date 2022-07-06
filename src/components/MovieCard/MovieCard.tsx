@@ -1,78 +1,117 @@
-import { motion } from 'framer-motion';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
+import {
+    AnimatePresence,
+    motion,
+    useMotionTemplate,
+    useMotionValue,
+} from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useQuery } from 'react-query';
-import { CarouselContext } from '../Carousel/Carousel';
 
+type MovieCardProps = {
+    title: Movie['title'];
+    desc: Movie['desc'];
+    poster: Movie['poster'];
+};
 
-const MovieCard = ({title, poster, desc, castDetails}: Movie) => {
-    const [showDetails, setShowDetails] = useState(false);
-    const [isShown, setIsShown] = useState(false);
-    const {isLoading, error, data} = useQuery(poster, () => {
-            return fetch(`/.netlify/functions/getDominantColor?url=${encodeURIComponent(poster)}`).then(res => res.json());
-        }
-    );
-    const {isDragging} = useContext(CarouselContext);
+type SkeletonProps = {
+    title: Movie['title'];
+};
 
-    if (isLoading) return (<h1>Loading...</h1>);
+const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
+    const [isPosterLoaded, setIsPosterLoaded] = useState(false);
+    const { ref, inView } = useInView();
 
-    const detailsVariants = {
+    const variants = {
         show: {
-            display: 'flex',
             opacity: 1,
-            scale: 1,
         },
         hide: {
             opacity: 0,
-            scale: 0,
-            transitionEnd: {
-                display: 'none'
-            }
-        }
+        },
     };
 
     return (
-        <div
-            className={`flex flex-col 
-            items-center relative`}
-            style={{
-                zIndex: showDetails ? 9999 : 0
-            }}
+        <>
+            <AnimatePresence>
+                {!isPosterLoaded && <MovieCardSkeleton title={title} />}
+                {/*<MovieCardSkeleton title={title} />*/}
+            </AnimatePresence>
+            <motion.div
+                className={`relative bg-cover`}
+                variants={variants}
+                ref={ref}
+                initial={`hide`}
+                animate={inView && isPosterLoaded ? 'show' : 'hide'}
+            >
+                <motion.img
+                    // initial={{ opacity: 0 }}
+                    // animate={isPosterLoaded ? { opacity: 1 } : { opacity: 0 }}
+                    src={poster}
+                    className={`aspect-[1/1.5] min-w-[200px] rounded-lg`}
+                    alt={`${title} poster`}
+                    loading={`lazy`}
+                    onLoad={() => {
+                        setTimeout(() => {
+                            setIsPosterLoaded(true);
+                        }, 1000);
+                    }}
+                />
+                <h1>{title}</h1>
+                <p>{desc}</p>
+            </motion.div>
+        </>
+    );
+};
+
+const MovieCardSkeleton = ({ title }: SkeletonProps) => {
+    const shimmerVariants = {
+        initial: {
+            backgroundPosition: '-1000px 0',
+        },
+        shimmer: {
+            backgroundPosition: ['-1000px 0', '1000px 0'],
+            transition: { repeat: Infinity, duration: 2, ease: 'linear' },
+        },
+    };
+    const variants = {
+        shimmer: {
+            // opacity: [0.2, 1, 0.2],
+            transition: { repeat: Infinity, duration: 2 },
+        },
+    };
+    return (
+        <motion.div
+            variants={variants}
+            initial={{ opacity: 1 }}
+            animate={`shimmer`}
+            exit={{ opacity: 0 }}
+            className={`absolute flex flex-col gap-1`}
+            // style={{ backgroundPosition: bgPosTemplate }}
         >
             <motion.div
-                className={`relative ${showDetails ? 'z-50' : ''} flex flex-col
-                shrink-0 aspect-[1/1.5] w-[10em] md:w-[15em] rounded-xl`}
-                // animate={inView ? {scale: 1} : {scale: .5}}
-                // animate={{scale: showDetails ? 1.25 : 1}}
-                style={
-                    {
-                        backgroundImage: `url(${poster})`,
-                        backgroundSize: 'cover',
-                    }}
-                onMouseEnter={() => setShowDetails(true)}
-                onMouseLeave={() => setShowDetails(false)}
-
-            />
-            <motion.div
-                variants={detailsVariants}
-                initial={'hide'}
-                animate={showDetails && !isDragging ? 'show' : 'hide'}
-                transition={{type: 'spring', bounce: .1}}
-                onAnimationComplete={(a) => {
-                    if (a === 'show') setIsShown(true);
-                    if (a === 'hide') setIsShown(false);
+                variants={shimmerVariants}
+                initial={`initial`}
+                animate={`shimmer`}
+                className={`relative aspect-[1/1.5] min-w-[200px] rounded-xl bg-slate-400`}
+                style={{
+                    backgroundSize: '1000px 100%',
+                    backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
                 }}
-                className={`absolute z-20 flex flex-col w-[125%] h-[135%] p-3 rounded-xl`}
-                style={{background: `linear-gradient(45deg, rgb(${data.palette[0]?.join(' ')}), rgb(${data.palette[1]?.join(' ')}))`}}
+            />
 
+            <motion.p
+                className={`h-3 w-fit rounded-full bg-slate-800 text-transparent`}
+                variants={shimmerVariants}
+                animate={`shimmer`}
+                style={{
+                    backgroundSize: '1000px 100%',
+                    backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
+                }}
             >
-                <h1 className={`relative font-bold relative mt-auto`}>{title}</h1>
-                <p className={`relative`}>{title}</p>
-            </motion.div>
-
-
-        </div>
+                {title}
+            </motion.p>
+        </motion.div>
     );
 };
 
