@@ -8,6 +8,8 @@ import MovieModal from './components/MovieModal/MovieModal';
 
 function App() {
     const [count, setCount] = useState(0);
+    const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const API_KEY = import.meta.env.VITE_TMDB_KEY;
     const { isLoading, error, data } = useQuery('topRatedMovies', () =>
@@ -26,13 +28,19 @@ function App() {
         <div
             className={`App flex flex-col overflow-hidden bg-gray-100 p-3 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
         >
-            <MovieModal
-                movie={{
-                    title: data.results[0].title,
-                    desc: data.results[0].overview,
-                    poster: `https://image.tmdb.org/t/p/original${data.results[0].poster_path}`,
-                }}
-            />
+            {selectedMovie && (
+                <MovieModal
+                    movie={{
+                        title: selectedMovie!.title,
+                        desc: selectedMovie!.overview,
+                        poster: `https://image.tmdb.org/t/p/original${
+                            selectedMovie!.poster_path
+                        }`,
+                    }}
+                    isOpen={isModalOpen}
+                    setIsOpen={setIsModalOpen}
+                />
+            )}
             <ThemeSwitcher />
             {/*<Modal title={'test'}/>*/}
             <h1>Hello</h1>
@@ -46,20 +54,10 @@ function App() {
                                 desc={card.desc}
                                 poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
                                 key={card.id}
-                            />
-                        );
-                    })}
-            </Carousel>
-            <Carousel gap={`1rem`}>
-                {data?.results
-                    // ?.filter((_, idx) => idx < 10)
-                    .map((card: any) => {
-                        return (
-                            <MovieCard
-                                title={card.title}
-                                desc={card.desc}
-                                poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
-                                key={card.id}
+                                onClick={() => {
+                                    setSelectedMovie(card);
+                                    setIsModalOpen(true);
+                                }}
                             />
                         );
                     })}

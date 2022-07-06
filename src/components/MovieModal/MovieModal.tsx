@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
 
 type MovieModalProps = {
     movie: Movie;
+    isOpen: boolean;
+    setIsOpen: (value: boolean) => void;
 };
 
-const MovieModal = ({ movie }: MovieModalProps) => {
-    const [isOpen, setIsOpen] = useState(false);
+const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
     const variants = {
         show: {
             display: 'flex',
