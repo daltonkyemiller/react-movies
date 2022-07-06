@@ -3,9 +3,12 @@ import Carousel from './components/Carousel/Carousel';
 import MovieCard from './components/MovieCard/MovieCard';
 import { useQuery } from 'react-query';
 import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
+import { Movie } from './types/Movie';
+import MovieModal from './components/MovieModal/MovieModal';
 
 function App() {
     const [count, setCount] = useState(0);
+
     const API_KEY = import.meta.env.VITE_TMDB_KEY;
     const { isLoading, error, data } = useQuery('topRatedMovies', () =>
         fetch(
@@ -23,6 +26,13 @@ function App() {
         <div
             className={`App flex flex-col overflow-hidden bg-gray-100 p-3 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
         >
+            <MovieModal
+                movie={{
+                    title: data.results[0].title,
+                    desc: data.results[0].overview,
+                    poster: `https://image.tmdb.org/t/p/original${data.results[0].poster_path}`,
+                }}
+            />
             <ThemeSwitcher />
             {/*<Modal title={'test'}/>*/}
             <h1>Hello</h1>

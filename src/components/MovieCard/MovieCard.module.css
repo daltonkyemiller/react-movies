@@ -1,0 +1,7 @@
+.img{
+	--img-width: 150px;
+	--md-img-width: 200px;
+
+	@apply pointer-events-none aspect-[1/1.5] w-[var(--img-width)] min-w-[var(--img-width)]
+	rounded-lg hover:scale-110 md:w-[var(--md-img-width)] md:min-w-[var(--md-img-width)];
+}

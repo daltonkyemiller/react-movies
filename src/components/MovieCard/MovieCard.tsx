@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
-import {
-    AnimatePresence,
-    motion,
-    useMotionTemplate,
-    useMotionValue,
-} from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import styles from './MovieCard.module.css';
+import { ThemeContext } from '../../utils/theme/themeContext';
 
 type MovieCardProps = {
     title: Movie['title'];
@@ -38,7 +35,7 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
                 {/*<MovieCardSkeleton title={title} />*/}
             </AnimatePresence>
             <motion.div
-                className={`relative bg-cover `}
+                className={`relative bg-cover transition-transform hover:scale-110`}
                 variants={variants}
                 ref={ref}
                 initial={`hide`}
@@ -48,7 +45,7 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
                     // initial={{ opacity: 0 }}
                     // animate={isPosterLoaded ? { opacity: 1 } : { opacity: 0 }}
                     src={poster}
-                    className={`aspect-[1/1.5] w-[100px] min-w-[100px] rounded-lg md:w-[200px] md:min-w-[200px]`}
+                    className={`${styles.img}`}
                     alt={`${title} poster`}
                     loading={`lazy`}
                     onLoad={() => {
@@ -65,6 +62,8 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
 };
 
 const MovieCardSkeleton = ({ title }: SkeletonProps) => {
+    const theme = useContext(ThemeContext);
+
     const shimmerVariants = {
         initial: {
             backgroundPosition: '-1000px 0',
@@ -93,10 +92,11 @@ const MovieCardSkeleton = ({ title }: SkeletonProps) => {
                 variants={shimmerVariants}
                 initial={`initial`}
                 animate={`shimmer`}
-                className={`aspect-[1/1.5] w-[100px] min-w-[100px] rounded-lg md:w-[200px] md:min-w-[200px]`}
+                className={`${styles.img}`}
                 style={{
                     backgroundSize: '1000px 100%',
                     backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
+                    filter: `${theme.theme === 'dark' ? 'invert(1)' : ''}`,
                 }}
             />
 
@@ -108,6 +108,7 @@ const MovieCardSkeleton = ({ title }: SkeletonProps) => {
                     backgroundSize: '1000px 100%',
                     //language=CSS
                     backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
+                    filter: `${theme.theme === 'dark' ? 'invert(1)' : ''}`,
                 }}
             >
                 {title}

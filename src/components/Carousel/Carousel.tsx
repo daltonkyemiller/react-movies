@@ -3,14 +3,11 @@ import React, {
     ForwardedRef,
     PropsWithChildren,
     useCallback,
-    useEffect,
-    useRef,
     useState,
 } from 'react';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
 import useMeasure from 'react-use-measure';
 import { useInView } from 'react-intersection-observer';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
 import _ from 'lodash';
 
 type CarouselProps = {
@@ -25,7 +22,7 @@ const Carousel = ({
 }: PropsWithChildren<CarouselProps>) => {
     const _childrenArr = React.Children.toArray(children);
 
-    const x = useSpring(0, { stiffness: 300, damping: 50 });
+    const x = useSpring(0, { stiffness: 100, damping: 50 });
 
     const [carouselRef, { width: carouselWidth }] = useMeasure();
 
@@ -98,16 +95,7 @@ const Carousel = ({
                 }}
             >
                 {_childrenArr.map((child, i) => (
-                    <CarouselItem
-                        key={i}
-                        style={{
-                            backfaceVisibility: 'hidden',
-                            userSelect: 'none',
-                            pointerEvents: 'none',
-                        }}
-                    >
-                        {child}
-                    </CarouselItem>
+                    <CarouselItem key={i}>{child}</CarouselItem>
                 ))}
             </motion.div>
             <AiOutlineRight
@@ -132,7 +120,7 @@ const CarouselItem = (
     return (
         <motion.div
             // animate={inView ? { opacity: [0, 1] } : { opacity: 0 }}
-            className={`inline-block`}
+            className={`inline-block select-none`}
             style={{ ...style }}
             ref={inViewRef}
         >
