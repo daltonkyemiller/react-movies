@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Carousel from './components/Carousel/Carousel';
 import MovieCard from './components/MovieCard/MovieCard';
 import { useQuery } from 'react-query';
+import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 
 function App() {
     const [count, setCount] = useState(0);
@@ -19,7 +20,10 @@ function App() {
     // Hardcoding response to limit API Calls
 
     return (
-        <div className={`App flex flex-col overflow-hidden p-3`}>
+        <div
+            className={`App flex flex-col overflow-hidden bg-gray-100 p-3 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
+        >
+            <ThemeSwitcher />
             {/*<Modal title={'test'}/>*/}
             <h1>Hello</h1>
             <Carousel gap={`1rem`}>

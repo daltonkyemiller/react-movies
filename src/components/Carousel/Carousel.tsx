@@ -5,6 +5,7 @@ import React, {
     useCallback,
     useEffect,
     useRef,
+    useState,
 } from 'react';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/all';
 import useMeasure from 'react-use-measure';
@@ -29,6 +30,8 @@ const Carousel = ({
     const [carouselRef, { width: carouselWidth }] = useMeasure();
 
     const [containerRef, { width: containerWidth }] = useMeasure();
+    const [canDrag, setCanDrag] = useState(true);
+    const [isDragging, setIsDragging] = useState(false);
 
     const moveCarousel = useCallback(
         (offset: number) => {
@@ -43,10 +46,30 @@ const Carousel = ({
         [carouselWidth, containerWidth, x]
     );
 
+    const breakDrag = useCallback(
+        (resetPos: number) => {
+            setCanDrag(false);
+            setIsDragging(false);
+            x.set(resetPos);
+        },
+        [x]
+    );
+
+    const dragUpdate = (latest: any) => {
+        const { x: currX } = latest;
+        const padding = 200;
+        const xMinLimit = -padding;
+
+        const xMaxLimit = carouselWidth - containerWidth + padding;
+        // if (currX <= 0) x.set(0);
+        console.log('currX', currX, 'f', xMaxLimit);
+        if (-currX <= xMinLimit) breakDrag(0);
+        if (-currX >= xMaxLimit) breakDrag(-xMaxLimit + padding);
+    };
+
     return (
         <div
-            className={`relative cursor-pointer overflow-x-clip ${className}`}
-            key={containerWidth}
+            className={`relative overflow-x-clip ${className}`}
             ref={containerRef}
         >
             <AiOutlineLeft
@@ -56,13 +79,22 @@ const Carousel = ({
                 }}
             />
             <motion.div
+                onUpdate={dragUpdate}
+                key={containerWidth}
                 ref={carouselRef}
-                drag={'x'}
-                className={`relative flex min-w-fit`}
+                drag={canDrag ? 'x' : false}
+                onDragStart={() => setIsDragging(true)}
+                onDragEnd={() => setIsDragging(false)}
+                className={`relative flex min-w-fit ${
+                    isDragging ? 'cursor-grabbing' : 'cursor-pointer'
+                }`}
                 style={{ x, gap }}
                 dragConstraints={{
                     left: -carouselWidth + containerWidth,
                     right: 0,
+                }}
+                onMouseUp={() => {
+                    if (!canDrag) setCanDrag(true);
                 }}
             >
                 {_childrenArr.map((child, i) => (

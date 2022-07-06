@@ -48,7 +48,7 @@ const MovieCard = ({ title, desc, poster }: MovieCardProps) => {
                     // initial={{ opacity: 0 }}
                     // animate={isPosterLoaded ? { opacity: 1 } : { opacity: 0 }}
                     src={poster}
-                    className={`aspect-[1/1.5] w-[200px] min-w-[200px] rounded-lg`}
+                    className={`aspect-[1/1.5] w-[100px] min-w-[100px] rounded-lg md:w-[200px] md:min-w-[200px]`}
                     alt={`${title} poster`}
                     loading={`lazy`}
                     onLoad={() => {
@@ -93,7 +93,7 @@ const MovieCardSkeleton = ({ title }: SkeletonProps) => {
                 variants={shimmerVariants}
                 initial={`initial`}
                 animate={`shimmer`}
-                className={`relative aspect-[1/1.5] w-[200px] rounded-xl bg-slate-400`}
+                className={`aspect-[1/1.5] w-[100px] min-w-[100px] rounded-lg md:w-[200px] md:min-w-[200px]`}
                 style={{
                     backgroundSize: '1000px 100%',
                     backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
