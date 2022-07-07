@@ -6,12 +6,13 @@ import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import { Movie } from './types/Movie';
 import MovieModal from './components/MovieModal/MovieModal';
 import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
+import { TMDB_IMAGE_URL } from './utils/consts';
 
 function App() {
     const [count, setCount] = useState(0);
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const GENRES_TO_SHOW = ['Action', 'Adventure', 'Comedy', 'Drama', 'Horror'];
+    const GENRES_TO_SHOW = ['Horror', 'Action', 'Adventure', 'Comedy', 'Drama'];
     const movies = useQueries([
         {
             queryKey: 'popularMovies',
@@ -46,9 +47,7 @@ function App() {
                         title: selectedMovie!.title,
                         desc: selectedMovie!.overview,
                         poster: selectedMovie!.poster_path,
-                        backdrop: `https://image.tmdb.org/t/p/original${
-                            selectedMovie!.backdrop_path
-                        }`,
+                        backdrop: selectedMovie!.backdrop_path,
                     }}
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}

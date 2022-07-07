@@ -24,7 +24,7 @@ const Carousel = ({
 }: PropsWithChildren<CarouselProps>) => {
     const _childrenArr = React.Children.toArray(children);
 
-    const x = useSpring(0, { stiffness: 100, damping: 50 });
+    const x = useSpring(0, { stiffness: 500, damping: 50 });
 
     const [carouselRef, { width: carouselWidth }] = useMeasure();
 
@@ -100,7 +100,12 @@ const Carousel = ({
                 }}
             >
                 {_childrenArr.map((child, i) => (
-                    <CarouselItem key={i}>{child}</CarouselItem>
+                    <CarouselItem
+                        key={i}
+                        style={{ pointerEvents: isDragging ? 'none' : 'unset' }}
+                    >
+                        {child}
+                    </CarouselItem>
                 ))}
             </motion.div>
             <AiOutlineRight

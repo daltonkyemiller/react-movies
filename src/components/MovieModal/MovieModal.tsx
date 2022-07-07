@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
+import { TMDB_IMAGE_URL } from '../../utils/consts';
+import Image from '../Image/Image';
 
 type MovieModalProps = {
     movie: Movie;
@@ -34,7 +36,7 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                     shadow-[0_0_50px_0_rgba(0,0,0,0.25)] dark:bg-gray-900 dark:shadow-[0_0_50px_0_rgba(255,255,255,0.25)]`}
                 >
                     <button
-                        className={`absolute left-2 top-2 text-3xl`}
+                        className={`absolute left-2 top-2 z-20 text-3xl`}
                         onClick={() => setIsOpen(false)}
                     >
                         X
@@ -70,9 +72,11 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                             }}
                             exit={{ opacity: 0, scale: 0.75 }}
                         >
-                            <img
-                                src={movie.backdrop}
-                                className={`h-full w-full object-cover`}
+                            <Image
+                                src={
+                                    TMDB_IMAGE_URL + movie.backdrop ??
+                                    movie.poster
+                                }
                                 alt={movie.title}
                             />
                         </motion.div>

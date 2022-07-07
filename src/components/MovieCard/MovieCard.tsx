@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styles from './MovieCard.module.css';
 import { ThemeContext } from '../../utils/theme/themeContext';
+import Image from '../../components/Image/Image';
 
 type MovieCardProps = {
     title: Movie['title'];
@@ -36,92 +37,38 @@ const MovieCard = ({
     };
 
     return (
-        <>
-            <AnimatePresence>
-                {!isPosterLoaded && <MovieCardSkeleton title={title} />}
-                {/*<MovieCardSkeleton title={title} />*/}
-            </AnimatePresence>
-            <motion.div
-                className={`relative bg-cover transition-transform hover:scale-110`}
-                variants={variants}
-                ref={ref}
-                initial={`hide`}
-                animate={inView && isPosterLoaded ? 'show' : 'hide'}
-                onClick={onClick}
-                {...rest}
-            >
-                <motion.img
-                    // initial={{ opacity: 0 }}
-                    // animate={isPosterLoaded ? { opacity: 1 } : { opacity: 0 }}
-                    src={poster}
-                    className={`${styles.img}`}
-                    alt={`${title} poster`}
-                    loading={`lazy`}
-                    onLoad={() => {
-                        setTimeout(() => {
-                            setIsPosterLoaded(true);
-                        }, 1000);
-                    }}
-                />
-                <h1 className={`text-md font-bold`}>{title}</h1>
-                <p>{desc}</p>
-            </motion.div>
-        </>
-    );
-};
-
-const MovieCardSkeleton = ({ title }: SkeletonProps) => {
-    const theme = useContext(ThemeContext);
-
-    const shimmerVariants = {
-        initial: {
-            backgroundPosition: '-1000px 0',
-        },
-        shimmer: {
-            backgroundPosition: ['-1000px 0', '1000px 0'],
-            transition: { repeat: Infinity, duration: 2, ease: 'linear' },
-        },
-    };
-    const variants = {
-        shimmer: {
-            // opacity: [0.2, 1, 0.2],
-            transition: { repeat: Infinity, duration: 2 },
-        },
-    };
-    return (
         <motion.div
+            className={`relative bg-cover transition-transform hover:scale-110`}
             variants={variants}
-            initial={{ opacity: 1 }}
-            animate={`shimmer`}
-            exit={{ opacity: 0 }}
-            className={`absolute flex flex-col gap-1`}
-            // style={{ backgroundPosition: bgPosTemplate }}
+            ref={ref}
+            initial={`hide`}
+            animate={inView ? 'show' : 'hide'}
+            onClick={onClick}
+            {...rest}
         >
-            <motion.div
-                variants={shimmerVariants}
-                initial={`initial`}
-                animate={`shimmer`}
-                className={`${styles.img}`}
-                style={{
-                    backgroundSize: '1000px 100%',
-                    backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
-                    filter: `${theme.theme === 'dark' ? 'invert(1)' : ''}`,
-                }}
-            />
-
-            <motion.h1
-                className={`text-md max-h-3 w-fit max-w-[90%] rounded-full bg-slate-800 font-bold text-transparent`}
-                variants={shimmerVariants}
-                animate={`shimmer`}
-                style={{
-                    backgroundSize: '1000px 100%',
-                    //language=CSS
-                    backgroundImage: `linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%)`,
-                    filter: `${theme.theme === 'dark' ? 'invert(1)' : ''}`,
-                }}
-            >
-                {title}
-            </motion.h1>
+            {/*<motion.img*/}
+            {/*    // initial={{ opacity: 0 }}*/}
+            {/*    // animate={isPosterLoaded ? { opacity: 1 } : { opacity: 0 }}*/}
+            {/*    src={poster}*/}
+            {/*    className={`${styles.img}`}*/}
+            {/*    alt={`${title} poster`}*/}
+            {/*    loading={`lazy`}*/}
+            {/*    onLoad={() => {*/}
+            {/*        setTimeout(() => {*/}
+            {/*            setIsPosterLoaded(true);*/}
+            {/*        }, 1000);*/}
+            {/*    }}*/}
+            {/*/>*/}
+            <div className={`${styles.img} overflow-hidden`}>
+                <Image
+                    src={poster}
+                    alt={`${title} poster`}
+                    onLoad={() => setIsPosterLoaded(true)}
+                    delay={3000}
+                />
+            </div>
+            <h1 className={`text-md font-bold`}>{title}</h1>
+            <p>{desc}</p>
         </motion.div>
     );
 };
