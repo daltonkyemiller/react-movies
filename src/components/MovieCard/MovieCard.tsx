@@ -9,13 +9,20 @@ type MovieCardProps = {
     title: Movie['title'];
     desc: Movie['desc'];
     poster: Movie['poster'];
+    onClick: () => void;
 };
 
 type SkeletonProps = {
     title: Movie['title'];
 };
 
-const MovieCard = ({ title, desc, poster, ...rest }: MovieCardProps) => {
+const MovieCard = ({
+    title,
+    desc,
+    poster,
+    onClick,
+    ...rest
+}: MovieCardProps) => {
     const [isPosterLoaded, setIsPosterLoaded] = useState(false);
     const { ref, inView } = useInView();
 
@@ -40,6 +47,7 @@ const MovieCard = ({ title, desc, poster, ...rest }: MovieCardProps) => {
                 ref={ref}
                 initial={`hide`}
                 animate={inView && isPosterLoaded ? 'show' : 'hide'}
+                onClick={onClick}
                 {...rest}
             >
                 <motion.img

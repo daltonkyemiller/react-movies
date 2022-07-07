@@ -26,15 +26,15 @@ function App() {
 
     return (
         <div
-            className={`App flex flex-col overflow-hidden bg-gray-100 p-3 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
+            className={`App flex min-h-screen flex-col overflow-hidden bg-gray-100 p-3 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
         >
             {selectedMovie && (
                 <MovieModal
                     movie={{
                         title: selectedMovie!.title,
                         desc: selectedMovie!.overview,
-                        poster: `https://image.tmdb.org/t/p/original${
-                            selectedMovie!.poster_path
+                        backdrop: `https://image.tmdb.org/t/p/original${
+                            selectedMovie!.backdrop_path
                         }`,
                     }}
                     isOpen={isModalOpen}
