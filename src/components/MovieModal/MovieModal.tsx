@@ -29,7 +29,9 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                     initial={`hide`}
                     animate={'show'}
                     exit={`hide`}
-                    className={`absolute inset-24 z-[100] flex items-center justify-center overflow-clip rounded-xl bg-gray-100 pl-5 dark:bg-gray-900`}
+                    className={`fixed inset-24 z-[100] flex items-center 
+                    justify-center overflow-clip rounded-xl bg-gray-100 pl-5 
+                    shadow-[0_0_50px_0_rgba(0,0,0,0.25)] dark:bg-gray-900 dark:shadow-[0_0_50px_0_rgba(255,255,255,0.25)]`}
                 >
                     <button
                         className={`absolute left-2 top-2 text-3xl`}

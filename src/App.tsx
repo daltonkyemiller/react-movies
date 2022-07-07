@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import Carousel from './components/Carousel/Carousel';
 import MovieCard from './components/MovieCard/MovieCard';
-import { useQuery } from 'react-query';
+import { useQueries, useQuery } from 'react-query';
 import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import { Movie } from './types/Movie';
 import MovieModal from './components/MovieModal/MovieModal';
+import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
 
 function App() {
     const [count, setCount] = useState(0);
-    const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+    const [selectedMovie, setSelectedMovie] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const GENRES_TO_SHOW = ['Action', 'Adventure', 'Comedy', 'Drama', 'Horror'];
+    const movies = useQueries([
+        {
+            queryKey: 'popularMovies',
+            queryFn: async () => ({
+                caption: 'Popular Movies',
+                ...(await getPopularMovies()),
+            }),
+        },
+        ...GENRES_TO_SHOW.map((genre) => ({
+            queryKey: genre,
+            queryFn: async () => ({
+                caption: genre,
+                ...(await getMoviesByGenre(genre)),
+            }),
+        })),
+    ]);
+    console.log(movies);
 
-    const API_KEY = import.meta.env.VITE_TMDB_KEY;
-    const { isLoading, error, data } = useQuery('topRatedMovies', () =>
-        fetch(
-            `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`
-        ).then((res) => res.json())
-    );
-
-    if (isLoading) {
+    if (movies.some((m) => m.isLoading)) {
         return <h1>Loading...</h1>;
     }
 
@@ -33,6 +45,7 @@ function App() {
                     movie={{
                         title: selectedMovie!.title,
                         desc: selectedMovie!.overview,
+                        poster: selectedMovie!.poster_path,
                         backdrop: `https://image.tmdb.org/t/p/original${
                             selectedMovie!.backdrop_path
                         }`,
@@ -44,24 +57,22 @@ function App() {
             <ThemeSwitcher />
             {/*<Modal title={'test'}/>*/}
             <h1>Hello</h1>
-            <Carousel gap={`1rem`}>
-                {data?.results
-                    // ?.filter((_, idx) => idx < 10)
-                    .map((card: any) => {
-                        return (
-                            <MovieCard
-                                title={card.title}
-                                desc={card.desc}
-                                poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
-                                key={card.id}
-                                onClick={() => {
-                                    setSelectedMovie(card);
-                                    setIsModalOpen(true);
-                                }}
-                            />
-                        );
-                    })}
-            </Carousel>
+            {movies.map((res) => (
+                <Carousel gap={`1rem`} caption={res.data.caption}>
+                    {res.data.results.map((card: any) => (
+                        <MovieCard
+                            title={card.title}
+                            desc={card.desc}
+                            poster={`https://image.tmdb.org/t/p/original/${card.poster_path}`}
+                            key={card.id}
+                            onClick={() => {
+                                setSelectedMovie(card);
+                                setIsModalOpen(true);
+                            }}
+                        />
+                    ))}
+                </Carousel>
+            ))}
         </div>
     );
 }

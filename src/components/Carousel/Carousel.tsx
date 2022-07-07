@@ -13,12 +13,14 @@ import _ from 'lodash';
 type CarouselProps = {
     gap?: string;
     className?: string;
+    caption?: string;
 };
 
 const Carousel = ({
     children,
     gap,
     className,
+    caption,
 }: PropsWithChildren<CarouselProps>) => {
     const _childrenArr = React.Children.toArray(children);
 
@@ -69,6 +71,9 @@ const Carousel = ({
             className={`relative overflow-x-clip ${className}`}
             ref={containerRef}
         >
+            {caption && (
+                <h1 className={`py-3 text-3xl font-bold`}>{caption}</h1>
+            )}
             <AiOutlineLeft
                 className={`absolute top-1/2 left-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
