@@ -5,6 +5,7 @@ type CastDetails = {
 };
 
 export interface Movie {
+    id: number;
     title: string;
     desc: string;
     poster: string;

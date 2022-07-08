@@ -77,7 +77,7 @@ const Carousel = ({
             <AiOutlineLeft
                 className={`absolute top-1/2 left-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
-                    moveCarousel(500);
+                    moveCarousel(containerWidth);
                 }}
             />
             <motion.div
@@ -111,7 +111,7 @@ const Carousel = ({
             <AiOutlineRight
                 className={`absolute top-1/2 right-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
-                    moveCarousel(-500);
+                    moveCarousel(-containerWidth);
                 }}
             />
         </div>
