@@ -5,6 +5,7 @@ import { useQueries, useQuery } from 'react-query';
 import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import MovieModal from './components/MovieModal/MovieModal';
 import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
+import LoadingPage from './components/LoadingPage/LoadingPage';
 
 function App() {
     const [count, setCount] = useState(0);
@@ -37,7 +38,7 @@ function App() {
     ]);
 
     if (movies.some((m) => m.isLoading)) {
-        return <h1>Loading...</h1>;
+        return <LoadingPage />;
     }
 
     // Hardcoding response to limit API Calls
