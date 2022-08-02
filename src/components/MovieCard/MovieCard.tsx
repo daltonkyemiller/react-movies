@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styles from './MovieCard.module.css';
 import Image from '../../components/Image/Image';
@@ -8,12 +8,18 @@ import Image from '../../components/Image/Image';
 type MovieCardProps = {
     title: Movie['title'];
     poster: Movie['poster'];
+    desc: Movie['desc'];
     onClick: () => void;
 };
 
-const MovieCard = ({ title, poster, onClick, ...rest }: MovieCardProps) => {
+const MovieCard = ({
+    title,
+    poster,
+    desc,
+    onClick,
+    ...rest
+}: MovieCardProps) => {
     const [isPosterLoaded, setIsPosterLoaded] = useState(false);
-    const { ref, inView } = useInView();
 
     const variants = {
         show: {
@@ -26,15 +32,11 @@ const MovieCard = ({ title, poster, onClick, ...rest }: MovieCardProps) => {
 
     return (
         <motion.div
-            className={`relative bg-cover transition-transform hover:scale-110`}
-            variants={variants}
-            ref={ref}
-            initial={`hide`}
-            animate={inView ? 'show' : 'hide'}
+            className={`relative transition-transform hover:scale-95`}
             onClick={onClick}
             {...rest}
         >
-            <div className={`${styles.img} overflow-hidden`}>
+            <div className={`${styles.img} overflow-hidden `}>
                 <Image
                     src={poster}
                     alt={`${title} poster`}
@@ -43,7 +45,7 @@ const MovieCard = ({ title, poster, onClick, ...rest }: MovieCardProps) => {
                 />
             </div>
             <h1
-                className={`text-md absolute max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap font-bold`}
+                className={`text-md absolute max-w-full overflow-hidden text-ellipsis whitespace-nowrap font-bold`}
             >
                 {title}
             </h1>

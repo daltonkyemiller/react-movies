@@ -1,25 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Carousel from './components/Carousel/Carousel';
 import MovieCard from './components/MovieCard/MovieCard';
-import { useQueries, useQuery } from 'react-query';
+import { useMutation, useQueries, useQuery } from 'react-query';
 import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import MovieModal from './components/MovieModal/MovieModal';
-import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
+import {
+    getMovieById,
+    getMoviesByGenre,
+    getPopularMovies,
+} from './utils/fetches';
 import LoadingPage from './components/LoadingPage/LoadingPage';
 import Nav from './components/Nav/Nav';
+import { MovieListContext } from './context/movieListContext';
 
 function App() {
-    const [count, setCount] = useState(0);
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const GENRES_TO_SHOW = [
         'Horror',
-        'Thriller',
-        'Mystery',
-        'Action',
-        'Adventure',
-        'Comedy',
-        'Drama',
+        // 'Thriller',
+        // 'Mystery',
+        // 'Action',
+        // 'Comedy',
+        // 'Adventure',
+        // 'Drama',
     ];
     const movies = useQueries([
         {
@@ -38,18 +42,18 @@ function App() {
         })),
     ]);
 
+    const { movies: movieList } = useContext(MovieListContext);
+
     if (movies.some((m) => m.isLoading)) {
         return <LoadingPage />;
     }
-
-    // Hardcoding response to limit API Calls
 
     return (
         <>
             <Nav />
             <div
-                className={`App flex min-h-screen flex-col overflow-hidden bg-gray-100
-             p-3 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
+                className={`App flex min-h-screen flex-col overflow-hidden bg-gray-100 p-4
+                text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
             >
                 {selectedMovie && (
                     <MovieModal
@@ -61,9 +65,7 @@ function App() {
                     />
                 )}
                 <ThemeSwitcher />
-                {/*<Modal title={'test'}/>*/}
-                <h1>Hello</h1>
-                {movies.map((res) => (
+                {movies.map((res, idx) => (
                     <Carousel
                         gap={`1rem`}
                         caption={res.data!.caption}
@@ -74,6 +76,7 @@ function App() {
                             <MovieCard
                                 title={card.title}
                                 poster={card.poster}
+                                desc={card.desc}
                                 key={card.id}
                                 onClick={() => {
                                     setSelectedMovie(card);
@@ -83,6 +86,24 @@ function App() {
                         ))}
                     </Carousel>
                 ))}
+                <Carousel
+                    caption={`Your Movie List`}
+                    gap={`1rem`}
+                    className={`pb-5`}
+                >
+                    {movieList.map((card: any) => (
+                        <MovieCard
+                            title={card.title}
+                            poster={card.poster}
+                            desc={card.desc}
+                            key={card.id}
+                            onClick={() => {
+                                setSelectedMovie(card);
+                                setIsModalOpen(true);
+                            }}
+                        />
+                    ))}
+                </Carousel>
             </div>
         </>
     );

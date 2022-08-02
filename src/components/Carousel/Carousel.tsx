@@ -1,4 +1,10 @@
-import { motion, useAnimation, useMotionValue, useSpring } from 'framer-motion';
+import {
+    AnimatePresence,
+    motion,
+    useAnimation,
+    useMotionValue,
+    useSpring,
+} from 'framer-motion';
 import React, {
     ForwardedRef,
     PropsWithChildren,
@@ -75,7 +81,7 @@ const Carousel = ({
                 <h1 className={`py-3 text-3xl font-bold`}>{caption}</h1>
             )}
             <AiOutlineLeft
-                className={`absolute top-1/2 left-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
+                className={`absolute top-1/2 left-0 z-50  cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
                     moveCarousel(containerWidth);
                 }}
@@ -99,17 +105,22 @@ const Carousel = ({
                     if (!canDrag) setCanDrag(true);
                 }}
             >
-                {_childrenArr.map((child, i) => (
-                    <CarouselItem
-                        key={i}
-                        style={{ pointerEvents: isDragging ? 'none' : 'unset' }}
-                    >
-                        {child}
-                    </CarouselItem>
-                ))}
+                <AnimatePresence>
+                    {_childrenArr.map((child, i) => (
+                        <CarouselItem
+                            idx={i}
+                            key={i}
+                            style={{
+                                pointerEvents: isDragging ? 'none' : 'unset',
+                            }}
+                        >
+                            {child}
+                        </CarouselItem>
+                    ))}
+                </AnimatePresence>
             </motion.div>
             <AiOutlineRight
-                className={`absolute top-1/2 right-0 z-50 -translate-y-1/2 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
+                className={`absolute top-1/2 right-0 z-50 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
                     moveCarousel(-containerWidth);
                 }}
@@ -119,17 +130,22 @@ const Carousel = ({
 };
 
 type CarouselItemProps = {
+    idx: number;
     style?: React.CSSProperties;
 };
 const CarouselItem = (
-    { children, style }: PropsWithChildren<CarouselItemProps>,
+    { children, idx, style }: PropsWithChildren<CarouselItemProps>,
     ref: ForwardedRef<any>
 ) => {
     const { ref: inViewRef, inView } = useInView({ initialInView: true });
 
     return (
         <motion.div
-            // animate={inView ? { opacity: [0, 1] } : { opacity: 0 }}
+            animate={
+                inView
+                    ? { opacity: 1, transition: { delay: 0.1 * idx } }
+                    : { opacity: 0 }
+            }
             className={`inline-block select-none`}
             style={{ ...style }}
             ref={inViewRef}

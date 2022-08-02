@@ -39,8 +39,22 @@ export const getMoviesByGenre = (genre: string): Promise<any> => {
 };
 
 export const getCastDetails = (id: number): Promise<any> => {
-    console.log('getCastDetails', id);
     return fetch(`${TMDB.API_URL}/movie/${id}/credits?api_key=${TMDB.API_KEY}`)
         .then((res) => res.json())
         .then((data) => data);
+};
+
+export const getMovieById = (id: number): Promise<any> => {
+    return fetch(`${TMDB.API_URL}/movie/${id}?api_key=${TMDB.API_KEY}`)
+        .then((res) => res.json())
+        .then(
+            (data) =>
+                ({
+                    id: data.id,
+                    title: data.title,
+                    desc: data.overview,
+                    backdrop: `${TMDB.IMAGE_URL}/${data.backdrop_path}`,
+                    poster: `${TMDB.IMAGE_URL}/${data.poster_path}`,
+                } as Movie)
+        );
 };
