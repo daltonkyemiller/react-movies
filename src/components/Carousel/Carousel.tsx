@@ -67,7 +67,6 @@ const Carousel = ({
 
         const xMaxLimit = carouselWidth - containerWidth + padding;
         // if (currX <= 0) x.set(0);
-        console.log('currX', currX, 'f', xMaxLimit);
         if (-currX <= xMinLimit) breakDrag(0);
         if (-currX >= xMaxLimit) breakDrag(-xMaxLimit + padding);
     };
@@ -81,7 +80,7 @@ const Carousel = ({
                 <h1 className={`py-3 text-3xl font-bold`}>{caption}</h1>
             )}
             <AiOutlineLeft
-                className={`absolute top-1/2 left-0 z-50  cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
+                className={`absolute top-1/2 left-0 z-50 cursor-pointer rounded-sm bg-slate-400 bg-opacity-75 text-4xl text-white`}
                 onClick={() => {
                     moveCarousel(containerWidth);
                 }}
@@ -141,11 +140,9 @@ const CarouselItem = (
 
     return (
         <motion.div
-            animate={
-                inView
-                    ? { opacity: 1, transition: { delay: 0.1 * idx } }
-                    : { opacity: 0 }
-            }
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.2 * idx + 0.25 } }}
+            exit={{ opacity: 0 }}
             className={`inline-block select-none`}
             style={{ ...style }}
             ref={inViewRef}

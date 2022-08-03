@@ -12,6 +12,7 @@
     "framer-motion": "^6.3.11",
     "lodash": "^4.17.21",
     "react": "^18.0.0",
+    "react-device-detect": "^2.2.2",
     "react-dom": "^18.0.0",
     "react-icons": "^4.4.0",
     "react-intersection-observer": "^9.3.3",

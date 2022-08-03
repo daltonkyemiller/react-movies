@@ -4,14 +4,14 @@ import MovieCard from './components/MovieCard/MovieCard';
 import { useMutation, useQueries, useQuery } from 'react-query';
 import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import MovieModal from './components/MovieModal/MovieModal';
-import {
-    getMovieById,
-    getMoviesByGenre,
-    getPopularMovies,
-} from './utils/fetches';
+import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
 import LoadingPage from './components/LoadingPage/LoadingPage';
 import Nav from './components/Nav/Nav';
 import { MovieListContext } from './context/movieListContext';
+import GlobalInfoModal from './components/GlobalInfoModal/GlobalInfoModal';
+import useModal from './hooks/useModal';
+import { ModalContext } from './context/modalContext';
+import { AnimatePresence } from 'framer-motion';
 
 function App() {
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
@@ -43,6 +43,7 @@ function App() {
     ]);
 
     const { movies: movieList } = useContext(MovieListContext);
+    const { isOpen } = useContext(ModalContext);
 
     if (movies.some((m) => m.isLoading)) {
         return <LoadingPage />;
@@ -51,6 +52,9 @@ function App() {
     return (
         <>
             <Nav />
+            <AnimatePresence exitBeforeEnter>
+                {isOpen && <GlobalInfoModal />}
+            </AnimatePresence>
             <div
                 className={`App flex min-h-screen flex-col overflow-hidden bg-gray-100 p-4
                 text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
@@ -74,9 +78,7 @@ function App() {
                     >
                         {res.data!.results.map((card: any) => (
                             <MovieCard
-                                title={card.title}
-                                poster={card.poster}
-                                desc={card.desc}
+                                movie={card}
                                 key={card.id}
                                 onClick={() => {
                                     setSelectedMovie(card);
@@ -86,24 +88,24 @@ function App() {
                         ))}
                     </Carousel>
                 ))}
-                <Carousel
-                    caption={`Your Movie List`}
-                    gap={`1rem`}
-                    className={`pb-5`}
-                >
-                    {movieList.map((card: any) => (
-                        <MovieCard
-                            title={card.title}
-                            poster={card.poster}
-                            desc={card.desc}
-                            key={card.id}
-                            onClick={() => {
-                                setSelectedMovie(card);
-                                setIsModalOpen(true);
-                            }}
-                        />
-                    ))}
-                </Carousel>
+                {movieList.length > 0 && (
+                    <Carousel
+                        caption={`Your Movie List`}
+                        gap={`1rem`}
+                        className={`min-h-[100px] pb-5`}
+                    >
+                        {movieList.map((card: any, idx) => (
+                            <MovieCard
+                                movie={card}
+                                key={idx}
+                                onClick={() => {
+                                    setSelectedMovie(card);
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        ))}
+                    </Carousel>
+                )}
             </div>
         </>
     );

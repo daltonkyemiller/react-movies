@@ -70,7 +70,7 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                             X
                         </button>
                         <button
-                            className={`absolute bottom-0 left-0 z-20 text-5xl `}
+                            className={`absolute bottom-1 left-1 z-20 text-5xl `}
                             title={`${
                                 isInList!(movie.id)
                                     ? 'Remove from list'
@@ -79,7 +79,6 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                             onClick={() => {
                                 if (isInList!(movie.id)) {
                                     removeMovie!(movie);
-
                                     return;
                                 }
                                 addMovie!(movie);
