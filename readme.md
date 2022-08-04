@@ -1,5 +1,5 @@
 # REACT MOVIES APP
-#### Movies application built in react leveraging Vite as a build tool and Framer Motion for animation
+#### Movies application built in [React](https://reactjs.org/) leveraging [Vite](https://vitejs.dev/) as a build tool and [Framer Motion](https://www.framer.com/motion/) for animation
 
 ## Technologies used:
 * [React](https://reactjs.org/)
