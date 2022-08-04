@@ -64,13 +64,13 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                         exit={`hide`}
                     >
                         <button
-                            className={`absolute left-2 top-2 z-20 text-3xl`}
+                            className={`absolute left-3 top-3 z-20 text-3xl`}
                             onClick={() => setIsOpen(false)}
                         >
                             X
                         </button>
                         <button
-                            className={`absolute bottom-1 left-1 z-20 text-5xl `}
+                            className={`absolute bottom-3 left-3 z-20 text-5xl `}
                             title={`${
                                 isInList!(movie.id)
                                     ? 'Remove from list'
@@ -99,7 +99,7 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                             key={movie.title}
                         >
                             <motion.div
-                                className={`flex w-full flex-shrink-0 flex-col p-5 md:w-1/2`}
+                                className={`flex w-full flex-shrink-0 flex-col p-10 md:w-1/2`}
                                 initial={{ opacity: 0, x: -100 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0 }}

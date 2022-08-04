@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Movie } from '../../types/Movie';
 import { motion, useSpring } from 'framer-motion';
 import styles from './MovieCard.module.css';
@@ -6,6 +6,7 @@ import Image from '../../components/Image/Image';
 import { MovieListContext } from '../../context/movieListContext';
 import { isMobile } from 'react-device-detect';
 import { ModalContext } from '../../context/modalContext';
+import { useInView } from 'react-intersection-observer';
 
 type MovieCardProps = {
     movie: Movie;
@@ -27,9 +28,13 @@ const MovieCard = ({ movie, onClick, ...rest }: MovieCardProps) => {
     };
 
     const [aboutToDelete, setAboutToDelete] = useState(false);
+    const { ref, inView } = useInView();
     const y = useSpring(0, { stiffness: 500, damping: 30 });
     return (
         <motion.div
+            ref={ref}
+            variants={variants}
+            animate={inView ? 'show' : 'hide'}
             onPan={(e, i) => {
                 if (isMobile) return;
                 const { y: offY } = i.offset;
