@@ -1,10 +1,4 @@
-import {
-    AnimatePresence,
-    motion,
-    useAnimation,
-    useMotionValue,
-    useSpring,
-} from 'framer-motion';
+import { AnimatePresence, motion, useSpring } from 'framer-motion';
 import React, {
     ForwardedRef,
     PropsWithChildren,

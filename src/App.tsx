@@ -6,10 +6,8 @@ import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import MovieModal from './components/MovieModal/MovieModal';
 import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
 import LoadingPage from './components/LoadingPage/LoadingPage';
-import Nav from './components/Nav/Nav';
 import { MovieListContext } from './context/movieListContext';
 import GlobalInfoModal from './components/GlobalInfoModal/GlobalInfoModal';
-import useModal from './hooks/useModal';
 import { ModalContext } from './context/modalContext';
 import { AnimatePresence } from 'framer-motion';
 
@@ -17,13 +15,13 @@ function App() {
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const GENRES_TO_SHOW = [
+        'Thriller',
+        'Mystery',
+        'Action',
+        'Comedy',
+        'Adventure',
+        'Drama',
         'Horror',
-        // 'Thriller',
-        // 'Mystery',
-        // 'Action',
-        // 'Comedy',
-        // 'Adventure',
-        // 'Drama',
     ];
     const movies = useQueries([
         {
@@ -51,7 +49,6 @@ function App() {
 
     return (
         <>
-            <Nav />
             <AnimatePresence exitBeforeEnter>
                 {isOpen && <GlobalInfoModal />}
             </AnimatePresence>

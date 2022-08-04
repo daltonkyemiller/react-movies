@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
-import {
-    AnimatePresence,
-    motion,
-    useMotionValue,
-    useSpring,
-} from 'framer-motion';
+import { motion, useSpring } from 'framer-motion';
 import styles from './MovieCard.module.css';
 import Image from '../../components/Image/Image';
 import { MovieListContext } from '../../context/movieListContext';
@@ -32,7 +27,7 @@ const MovieCard = ({ movie, onClick, ...rest }: MovieCardProps) => {
     };
 
     const [aboutToDelete, setAboutToDelete] = useState(false);
-    const y = useSpring(0, { stiffness: 500, damping: 50 });
+    const y = useSpring(0, { stiffness: 500, damping: 30 });
     return (
         <motion.div
             onPan={(e, i) => {
@@ -44,9 +39,11 @@ const MovieCard = ({ movie, onClick, ...rest }: MovieCardProps) => {
                     if (!isOpen)
                         openModal &&
                             openModal({
-                                title: isInList!(movie.id)
-                                    ? 'Remove from list'
-                                    : 'Add to list',
+                                title: `Release to ${
+                                    isInList!(movie.id)
+                                        ? 'remove from'
+                                        : 'add to'
+                                } your list`,
                                 body: '',
                             });
                     if (!aboutToDelete) setAboutToDelete(true);
