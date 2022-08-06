@@ -4,16 +4,24 @@ import MovieCard from './components/MovieCard/MovieCard';
 import { useMutation, useQueries, useQuery } from 'react-query';
 import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 import MovieModal from './components/MovieModal/MovieModal';
-import { getMoviesByGenre, getPopularMovies } from './utils/fetches';
+import {
+    getMoviesByGenre,
+    getPopularMovies,
+    searchMovies,
+} from './utils/fetches';
 import LoadingPage from './components/LoadingPage/LoadingPage';
 import { MovieListContext } from './context/movieListContext';
 import GlobalInfoModal from './components/GlobalInfoModal/GlobalInfoModal';
 import { ModalContext } from './context/modalContext';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import SearchBar from './components/SearchBar/SearchBar';
+import { Movie } from './types/Movie';
+import Nav from './components/Nav/Nav';
 
 function App() {
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchResults, setSearchResults] = useState<Array<Movie>>();
     const GENRES_TO_SHOW = [
         'Thriller',
         'Mystery',
@@ -49,13 +57,16 @@ function App() {
 
     return (
         <>
+            <Nav
+                onSearch={async (search) => {
+                    if (search === '') return;
+                    setSearchResults(await searchMovies(search));
+                }}
+            />
             <AnimatePresence exitBeforeEnter>
                 {isOpen && <GlobalInfoModal />}
             </AnimatePresence>
-            <div
-                className={`App flex min-h-screen flex-col overflow-hidden bg-gray-100 p-4
-                text-gray-900 transition-colors dark:bg-gray-900 dark:text-gray-100`}
-            >
+            <div className={`App flex min-h-screen flex-col overflow-hidden`}>
                 {selectedMovie && (
                     <MovieModal
                         movie={{
@@ -65,26 +76,61 @@ function App() {
                         setIsOpen={setIsModalOpen}
                     />
                 )}
-                <ThemeSwitcher />
-                {movies.map((res, idx) => (
-                    <Carousel
-                        gap={`1rem`}
-                        caption={res.data!.caption}
-                        key={res.data!.caption}
-                        className={`pb-5`}
-                    >
-                        {res.data!.results.map((card: any) => (
-                            <MovieCard
-                                movie={card}
-                                key={card.id}
-                                onClick={() => {
-                                    setSelectedMovie(card);
-                                    setIsModalOpen(true);
-                                }}
-                            />
-                        ))}
-                    </Carousel>
-                ))}
+
+                <AnimatePresence>
+                    {searchResults && searchResults.length > 0 && (
+                        <motion.div
+                            key={JSON.stringify(searchResults)}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        >
+                            <Carousel
+                                caption={`Search Results`}
+                                gap={`1rem`}
+                                className={`min-h-[100px] pb-5`}
+                            >
+                                {searchResults.map((card: any, idx) => (
+                                    <MovieCard
+                                        movie={card}
+                                        key={idx}
+                                        onClick={() => {
+                                            setSelectedMovie(card);
+                                            setIsModalOpen(true);
+                                        }}
+                                    />
+                                ))}
+                            </Carousel>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <motion.section
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                    {movies.map((res, idx) => (
+                        <Carousel
+                            key={idx}
+                            caption={res.data?.caption}
+                            gap={`1rem`}
+                            className={`pb-5`}
+                        >
+                            {res.data!.results.map((card: any) => (
+                                <MovieCard
+                                    movie={card}
+                                    key={card.id}
+                                    onClick={() => {
+                                        setSelectedMovie(card);
+                                        setIsModalOpen(true);
+                                    }}
+                                />
+                            ))}
+                        </Carousel>
+                    ))}
+                </motion.section>
+
                 {movieList.length > 0 && (
                     <Carousel
                         caption={`Your Movie List`}

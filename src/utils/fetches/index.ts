@@ -58,3 +58,24 @@ export const getMovieById = (id: number): Promise<any> => {
                 } as Movie)
         );
 };
+
+export const searchMovies = (query: string): Promise<any> => {
+    return fetch(
+        `${TMDB.API_URL}/search/movie?api_key=${TMDB.API_KEY}&query=${query}`
+    )
+        .then((res) => res.json())
+        .then(
+            (data) =>
+                data.results &&
+                data.results.map(
+                    (movie: any) =>
+                        ({
+                            id: movie.id,
+                            title: movie.title,
+                            desc: movie.overview,
+                            backdrop: `${TMDB.IMAGE_URL}/${movie.backdrop_path}`,
+                            poster: `${TMDB.IMAGE_URL}/${movie.poster_path}`,
+                        } as Movie)
+                )
+        );
+};
