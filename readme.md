@@ -1,5 +1,5 @@
 # REACT MOVIES APP
-#### Movies application built in [React](https://reactjs.org/) leveraging [Vite](https://vitejs.dev/) as a build tool and [Framer Motion](https://www.framer.com/motion/) for animation
+#### Movies application built in [React](https://reactjs.org/) leveraging [Vite](https://vitejs.dev/) as a build tool, [TailwindCSS](https://tailwindcss.com/) to style and [Framer Motion](https://www.framer.com/motion/) for animation
 
 ## Technologies used:
 * [TypeScript](https://www.typescriptlang.org/)
