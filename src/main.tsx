@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ThemeContext, ThemeProvider } from './utils/theme/themeContext';
+import { ThemeContext, ThemeProvider } from './context/theme/themeContext';
 import { MovieListProvider } from './context/movieListContext';
 import { ModalProvider } from './context/modalContext';
 

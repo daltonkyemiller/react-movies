@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useContext, useState } from 'react';
-import { ThemeContext } from '../../utils/theme/themeContext';
+import { ThemeContext } from '../../context/theme/themeContext';
 
 type ImageProps = {
     src: string;

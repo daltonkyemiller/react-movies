@@ -13,6 +13,7 @@ import _ from 'lodash';
 type CarouselProps = {
     gap?: string;
     className?: string;
+    itemClassName?: string;
     caption?: string;
 };
 
@@ -21,6 +22,7 @@ const Carousel = ({
     gap,
     className,
     caption,
+    itemClassName = '',
 }: PropsWithChildren<CarouselProps>) => {
     const _childrenArr = React.Children.toArray(children);
 
@@ -103,6 +105,7 @@ const Carousel = ({
                         <CarouselItem
                             idx={i}
                             key={i}
+                            className={itemClassName}
                             style={{
                                 pointerEvents: isDragging ? 'none' : 'unset',
                             }}
@@ -124,10 +127,11 @@ const Carousel = ({
 
 type CarouselItemProps = {
     idx: number;
+    className?: string;
     style?: React.CSSProperties;
 };
 const CarouselItem = (
-    { children, idx, style }: PropsWithChildren<CarouselItemProps>,
+    { children, idx, style, className = '' }: PropsWithChildren<CarouselItemProps>,
     ref: ForwardedRef<any>
 ) => {
     const { ref: inViewRef, inView } = useInView({ initialInView: true });
@@ -137,7 +141,7 @@ const CarouselItem = (
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.2 * idx + 0.25 } }}
             exit={{ opacity: 0 }}
-            className={`inline-block select-none`}
+            className={`inline-block select-none ${className}`}
             style={{ ...style }}
             ref={inViewRef}
         >

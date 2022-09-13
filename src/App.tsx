@@ -17,6 +17,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SearchBar from './components/SearchBar/SearchBar';
 import { Movie } from './types/Movie';
 import Nav from './components/Nav/Nav';
+import _ from 'lodash';
 
 function App() {
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
@@ -105,6 +106,26 @@ function App() {
                     )}
                 </AnimatePresence>
 
+                {!_.isEmpty(movieList) && (
+                    <Carousel
+                        caption={`Your Movie List`}
+                        gap={`1rem`}
+                        className={`min-h-[100px] pb-5`}
+                    >
+                        {movieList.map((card, idx) => (
+                            <MovieCard
+                                className={`h-[500px] w-[300px]`}
+                                movie={card}
+                                key={idx}
+                                onClick={() => {
+                                    setSelectedMovie(card);
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        ))}
+                    </Carousel>
+                )}
+
                 <motion.section
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -130,25 +151,6 @@ function App() {
                         </Carousel>
                     ))}
                 </motion.section>
-
-                {movieList.length > 0 && (
-                    <Carousel
-                        caption={`Your Movie List`}
-                        gap={`1rem`}
-                        className={`min-h-[100px] pb-5`}
-                    >
-                        {movieList.map((card: any, idx) => (
-                            <MovieCard
-                                movie={card}
-                                key={idx}
-                                onClick={() => {
-                                    setSelectedMovie(card);
-                                    setIsModalOpen(true);
-                                }}
-                            />
-                        ))}
-                    </Carousel>
-                )}
             </div>
         </>
     );

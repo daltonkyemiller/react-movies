@@ -11,9 +11,10 @@ import { useInView } from 'react-intersection-observer';
 type MovieCardProps = {
     movie: Movie;
     onClick: () => void;
+    className?: string;
 };
 
-const MovieCard = ({ movie, onClick, ...rest }: MovieCardProps) => {
+const MovieCard = ({ movie, onClick, className = '', ...rest }: MovieCardProps) => {
     const [isPosterLoaded, setIsPosterLoaded] = useState(false);
     const { addMovie, removeMovie, isInList } = useContext(MovieListContext);
     const { isOpen, openModal, closeModal } = useContext(ModalContext);
@@ -82,7 +83,7 @@ const MovieCard = ({ movie, onClick, ...rest }: MovieCardProps) => {
             onClick={onClick}
             {...rest}
         >
-            <div className={`${styles.img} overflow-hidden`}>
+            <div className={`${styles.img} overflow-hidden ${className}`}>
                 <Image
                     src={movie.poster}
                     alt={`${movie.title} poster`}

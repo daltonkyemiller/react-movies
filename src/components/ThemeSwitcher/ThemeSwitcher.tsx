@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ThemeContext } from '../../utils/theme/themeContext';
+import { ThemeContext } from '../../context/theme/themeContext';
 
 type ThemeSwitcherProps = {};
 
@@ -8,7 +8,7 @@ const ThemeSwitcher = ({}: ThemeSwitcherProps) => {
     return (
         <div className={` font-bold`}>
             <button onClick={() => theme.toggleTheme!()}>
-                Switch to {theme.theme === 'dark' ? 'Light' : 'Dark'} Mode
+                {theme.theme === 'dark' ? 'Light' : 'Dark'} Mode
             </button>
         </div>
     );

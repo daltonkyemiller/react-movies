@@ -5,7 +5,12 @@ module.exports = {
     content: ['./index.html', './src/**/*.{vue,jsx,tsx,ts,js}'],
 
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                brand: ['contralto-big', 'sans-serif'],
+            }
+        },
+
     },
     plugins: [require('@tailwindcss/typography')],
 };

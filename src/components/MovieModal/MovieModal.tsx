@@ -7,6 +7,7 @@ import { getCastDetails, getMovieById } from '../../utils/fetches';
 import { useQuery, useQueryClient } from 'react-query';
 import { BiListMinus, BiListPlus } from 'react-icons/all';
 import { MovieListContext } from '../../context/movieListContext';
+import { ThemeContext } from '../../context/theme/themeContext';
 
 type MovieModalProps = {
     movie: Movie;
@@ -20,15 +21,39 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
         () => getCastDetails(movie.id)
     );
     const { addMovie, removeMovie, isInList } = useContext(MovieListContext);
-    const queryClient = useQueryClient();
+    const { data: colorDetails } = useQuery(
+        ['colorDetails', movie.id],
+        () =>
+            fetch(
+                `/.netlify/functions/getDominantColor?url=${
+                    TMDB_IMAGE_URL + (movie.backdrop ?? movie.poster)
+                }`
+            ).then((res) => res.json()),
 
-    if (isLoading) return <></>;
+        {
+            enabled: !!movie,
+        }
+    );
+    const { theme } = useContext(ThemeContext);
+
+    useEffect(() => {
+        document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isOpen]);
+
+    if (isLoading) return null;
+
+    const [r1, g1, b1] = colorDetails?.palette[0] || [0, 0, 0];
+    const [r2, g2, b2] = colorDetails?.palette[1] || [0, 0, 0];
 
     const variants = {
         show: {
             display: 'flex',
             scale: 1,
             opacity: 1,
+            background: `linear-gradient(to bottom right, rgba(${r1}, ${g1}, ${b1}, .5) 0%, rgba(${r2}, ${g2}, ${b2}, .5) 100%)`,
         },
         hide: {
             opacity: 0,
@@ -55,9 +80,7 @@ const MovieModal = ({ movie, isOpen, setIsOpen }: MovieModalProps) => {
                     }}
                 >
                     <motion.div
-                        className={`fixed inset-0 flex items-center justify-center 
-                    overflow-clip rounded-xl bg-gray-100 shadow-[0_0_50px_0_rgba(0,0,0,0.25)]
-                    dark:bg-gray-900 dark:shadow-[0_0_50px_0_rgba(255,255,255,0.25)] md:inset-20`}
+                        className={`fixed inset-0 flex items-center justify-center overflow-clip rounded-xl backdrop-blur-xl dark:shadow-[0_0_50px_0_rgba(255,255,255,0.25)] md:inset-20`}
                         variants={variants}
                         initial={`hide`}
                         animate={'show'}
