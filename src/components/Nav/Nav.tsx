@@ -11,20 +11,15 @@ const Nav = ({ onSearch }: NavProps) => {
     return (
         <nav>
             <ul className={`relative flex items-center justify-between py-4`}>
-                <li className={`relative`}>
-                    <a href="/" className={``}>
-                        {/*<BiCameraMovie className={`text-5xl`} />*/}
-                    </a>
+                <li className={`translate-x-[13%]`}>
+                    {/*<SearchBar onSearch={onSearch} />*/}
                 </li>
                 <li>
-                    <h1 className={`font-bold text-6xl font-brand lowercase`}>Movies App</h1>
+                    <h1 className={`font-brand text-6xl font-bold lowercase`}>
+                        mvie
+                    </h1>
                 </li>
-                {/*<li className={`translate-x-[13%]`}>*/}
-                {/*    <SearchBar onSearch={onSearch} />*/}
-                {/*</li>*/}
-                <li>
-                    <ThemeSwitcher />
-                </li>
+                <li>{/*<ThemeSwitcher />*/}</li>
             </ul>
         </nav>
     );

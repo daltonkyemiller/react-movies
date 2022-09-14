@@ -114,13 +114,16 @@ function App() {
                     >
                         {movieList.map((card, idx) => (
                             <MovieCard
-                                className={`h-[500px] w-[300px]`}
-                                movie={card}
+                                movie={{
+                                    ...card,
+                                    poster: card.backdrop as string,
+                                }}
                                 key={idx}
                                 onClick={() => {
                                     setSelectedMovie(card);
                                     setIsModalOpen(true);
                                 }}
+                                className={`md:h-[300px] md:w-[500px]`}
                             />
                         ))}
                     </Carousel>

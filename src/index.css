@@ -7,7 +7,7 @@ body {
 }
 
 html, body{
-	@apply bg-white dark:text-neutral-50 dark:bg-gradient-to-br dark:from-violet-900  dark:to-fuchsia-900 transition-colors;
+	@apply bg-white dark:text-neutral-50 dark:bg-black/95 transition-colors;
 }
 
 body::after{
