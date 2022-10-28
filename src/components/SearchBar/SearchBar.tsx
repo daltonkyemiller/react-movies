@@ -8,7 +8,7 @@ type SeachBarProps = {
 };
 
 const SearchBar = ({ onSearch, className }: SeachBarProps) => {
-    const [barOpen, setBarOpen] = React.useState(false);
+    const [barOpen, setBarOpen] = React.useState(true);
     const barRef = useRef<HTMLInputElement>(null);
 
     const barVariants = {
@@ -49,6 +49,7 @@ const SearchBar = ({ onSearch, className }: SeachBarProps) => {
                 />
             </motion.div>
             <motion.input
+                autoFocus
                 ref={barRef}
                 className={`h-10 origin-left rounded-md bg-neutral-900 p-3 text-neutral-50 text-neutral-50 outline-none dark:bg-neutral-50 dark:text-neutral-900`}
                 type="text"

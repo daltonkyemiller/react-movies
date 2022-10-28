@@ -14,24 +14,25 @@ import { MovieListContext } from './context/movieListContext';
 import GlobalInfoModal from './components/GlobalInfoModal/GlobalInfoModal';
 import { ModalContext } from './context/modalContext';
 import { AnimatePresence, motion } from 'framer-motion';
-import SearchBar from './components/SearchBar/SearchBar';
 import { Movie } from './types/Movie';
 import Nav from './components/Nav/Nav';
 import _ from 'lodash';
+
+const GENRES_TO_SHOW = [
+    'Thriller',
+    'Mystery',
+    'Action',
+    'Comedy',
+    'Adventure',
+    'Drama',
+    'Horror',
+];
 
 function App() {
     const [selectedMovie, setSelectedMovie] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchResults, setSearchResults] = useState<Array<Movie>>();
-    const GENRES_TO_SHOW = [
-        'Thriller',
-        'Mystery',
-        'Action',
-        'Comedy',
-        'Adventure',
-        'Drama',
-        'Horror',
-    ];
+
     const movies = useQueries([
         {
             queryKey: 'popularMovies',
