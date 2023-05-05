@@ -131,7 +131,12 @@ type CarouselItemProps = {
     style?: React.CSSProperties;
 };
 const CarouselItem = (
-    { children, idx, style, className = '' }: PropsWithChildren<CarouselItemProps>,
+    {
+        children,
+        idx,
+        style,
+        className = '',
+    }: PropsWithChildren<CarouselItemProps>,
     ref: ForwardedRef<any>
 ) => {
     const { ref: inViewRef, inView } = useInView({ initialInView: true });
